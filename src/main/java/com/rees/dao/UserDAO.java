@@ -3,19 +3,22 @@ package com.rees.dao;
 import com.rees.model.User;
 import com.rees.model.User.Role;
 import com.rees.model.User.Status;
-import com.rees.util.DBConnection;
 import com.rees.util.QueryLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
-import org.springframework.stereotype.Repository;
 @Repository
-
 public class UserDAO {
+
+    @Autowired
+    private DataSource dataSource;
 
     public boolean existsByEmail(String email) {
         String sql = QueryLoader.getQuery("user.existsByEmail");
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
@@ -28,7 +31,7 @@ public class UserDAO {
 
     public boolean existsByPhone(String phone) {
         String sql = QueryLoader.getQuery("user.existsByPhone");
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, phone);
             ResultSet rs = ps.executeQuery();
@@ -41,7 +44,7 @@ public class UserDAO {
 
     public void save(User user) {
         String sql = QueryLoader.getQuery("user.insert");
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, user.getUserId());
@@ -49,8 +52,8 @@ public class UserDAO {
             ps.setString(3, user.getPassword());
             ps.setString(4, user.getName());
             ps.setString(5, user.getPhone());
-            ps.setString(6, user.getRole().name());   // Correct enum to String
-            ps.setString(7, user.getStatus().name()); // Correct enum to String
+            ps.setString(6, user.getRole().name());
+            ps.setString(7, user.getStatus().name());
             ps.setTimestamp(8, user.getCreatedAt());
 
             ps.executeUpdate();
@@ -59,15 +62,14 @@ public class UserDAO {
         }
     }
 
-
     public User findByEmail(String email) {
         String sql = QueryLoader.getQuery("user.findByEmail");
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-            	return new User(
+                return new User(
                         rs.getString("user_id"),
                         rs.getString("email"),
                         rs.getString("password"),
@@ -86,7 +88,7 @@ public class UserDAO {
 
     public void updatePassword(String userId, String newPassword) {
         String sql = QueryLoader.getQuery("user.updatePassword");
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, newPassword);
             ps.setString(2, userId);
@@ -95,5 +97,4 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-    
 }
