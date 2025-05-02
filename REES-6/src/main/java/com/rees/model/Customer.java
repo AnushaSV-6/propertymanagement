@@ -30,13 +30,13 @@ public class Customer {
     @Column(nullable = false)
     private String address;
 
-    @Column(name = "contact_number", nullable = false, length = 10)
+    @Column(name = "contact_number", nullable = false)
     private String contactNumber;
 
-    @Column(name = "aadhaar_number", nullable = false, length = 12)
+    @Column(name = "aadhaar_number", nullable = false )
     private String aadhaarNumber;
 
-    @Column(name = "pan_number", nullable = false, length = 10)
+    @Column(name = "pan_number", nullable = false)
     private String panNumber;
 
     @OneToMany(mappedBy = "customer")
