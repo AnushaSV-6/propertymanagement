@@ -58,6 +58,6 @@ public class Project {
     }
 
     public enum ProjectStatus {
-        COMPLETED, JV, PURCHASED, REGISTERED, STARTED, UNDER_AGREEMENT
+        COMPLETED, JV, PURCHASED, REGISTERED, STARTED, UNDERAGREEMENT
     }
 }

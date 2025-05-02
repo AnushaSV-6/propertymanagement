@@ -50,6 +50,6 @@ public class Plot {
     private Timestamp updatedAt;
 
     public enum PlotStatus {
-        SALED, BOOKED, AVAILABLE
+        SOLD, BOOKED, AVAILABLE
     }
 }
