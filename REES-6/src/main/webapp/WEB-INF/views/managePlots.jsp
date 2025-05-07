@@ -46,14 +46,14 @@ h2 {
 <body>
 
 	<div class="container">
-		<h2>Manage Plots</h2>
+		<h2>Manage Projects</h2>
 
-		<a href="<%= request.getContextPath() %>/admin/plots/addplot"
-			class="btn btn-primary btn-option">Add Plots</a> <a
-			href="<%= request.getContextPath() %>/admin/plots/updateplot"
-			class="btn btn-warning btn-option">Update Plots</a> <a
-			href="<%= request.getContextPath() %>/admin/plots/viewplot"
-			class="btn btn-success btn-option">View Plots</a>
+		<a href="<%= request.getContextPath() %>/admin/plots/add"
+			class="btn btn-primary btn-option">Add Plot</a> <a
+			href="<%= request.getContextPath() %>/admin/plots/edit"
+			class="btn btn-warning btn-option">Update Plot</a> <a
+			href="<%= request.getContextPath() %>/admin/plots/list"
+			class="btn btn-success btn-option">View Projects</a>
 	</div>
 
 </body>

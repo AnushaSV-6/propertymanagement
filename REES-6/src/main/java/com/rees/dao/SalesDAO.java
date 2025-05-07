@@ -55,7 +55,7 @@ public class SalesDAO {
     public List<Plot> getAvailablePlots(int projectId) {
         List<Plot> list = new ArrayList<>();
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(QueryLoader.getQuery("plot.selectAvailableByProject"))) {
+             PreparedStatement ps = conn.prepareStatement(QueryLoader.getQuery("plot.selectByProject"))) {
             ps.setInt(1, projectId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
