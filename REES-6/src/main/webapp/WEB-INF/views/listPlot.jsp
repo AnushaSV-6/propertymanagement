@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="java.util.*" %>
-<%@ page import="com.rees.model.Plot" %>
+<%@ page import="java.util.*, com.rees.model.Plot, com.rees.model.Project" %>
 <%
     List<Plot> plots = (List<Plot>) request.getAttribute("plots");
-    String msg = (String) request.getAttribute("msg");
+    List<Project> projects = (List<Project>) request.getAttribute("projects");
+    Integer selectedProjectId = (Integer) request.getAttribute("selectedProjectId");
 %>
 <html>
 <head>
@@ -45,7 +45,7 @@
         function filterByStatus(status) {
             const rows = document.querySelectorAll("table tbody tr");
             rows.forEach(row => {
-                const cell = row.querySelector("td:nth-child(8)"); // 8th column is Status
+                const cell = row.querySelector("td[data-status]");
                 if (status === 'ALL' || (cell && cell.innerText.trim() === status)) {
                     row.style.display = '';
                 } else {
@@ -59,56 +59,81 @@
 
 <h2>Plot List</h2>
 
-<% if (msg != null && !msg.trim().isEmpty()) { %>
-    <p style="color: green; text-align:center;"><%= msg %></p>
-<% } %>
+<div class="filter-form">
+    <form action="list" method="get">
+        <label for="projectId">Select Project:</label>
+        <select name="projectId" id="projectId" required>
+            <option value="">-- Select --</option>
+            <%
+                if (projects != null) {
+                    for (Project proj : projects) {
+                        String selected = (selectedProjectId != null && proj.getProjectId() == selectedProjectId) ? "selected" : "";
+            %>
+                <option value="<%= proj.getProjectId() %>" <%= selected %>><%= proj.getProjectName() %></option>
+            <%
+                    }
+                }
+            %>
+        </select>
+        <button type="submit">Load</button>
+    </form>
+</div>
+
+<%
+    if (plots != null && !plots.isEmpty()) {
+%>
 
 <div class="filter-form">
     <label><input type="radio" name="status" value="ALL" checked onclick="filterByStatus('ALL')"> All</label>
     <label><input type="radio" name="status" value="AVAILABLE" onclick="filterByStatus('AVAILABLE')"> Available</label>
     <label><input type="radio" name="status" value="BOOKED" onclick="filterByStatus('BOOKED')"> Booked</label>
-    <label><input type="radio" name="status" value="SOLD" onclick="filterByStatus('SOLD')"> Sold</label>
+    <label><input type="radio" name="status" value="SALED" onclick="filterByStatus('SALED')"> Saled</label>
 </div>
 
-<% if (plots != null && !plots.isEmpty()) { %>
 <table>
     <thead>
-        <tr>
-            <th>ID</th>
-            <th>Project</th>
-            <th>Site No</th>
-            <th>Size</th>
-            <th>Facing</th>
-            <th>Type</th>
-            <th>Road Width</th>
-            <th>Status</th>
-            <th>Customer</th>
-            <th>Action</th>
-        </tr>
+    <tr>
+        <th>ID</th>
+        <th>Project</th>
+        <th>Site No</th>
+        <th>Size</th>
+        <th>Facing</th>
+        <th>Type</th>
+        <th>Road Width</th>
+        <th>Status</th>
+        <th>Customer</th>
+        <th>Action</th>
+    </tr>
     </thead>
     <tbody>
-        <% for (Plot p : plots) {
-            if (p != null) {
-        %>
+    <%
+        for (Plot p : plots) {
+    %>
         <tr>
             <td><%= p.getPlotId() %></td>
-            <td><%= (p.getProject() != null) ? p.getProject().getProjectName() : "-" %></td>
+            <td><%= p.getProject() != null ? p.getProject().getProjectName() : "-" %></td>
             <td><%= p.getSiteNumber() %></td>
             <td><%= p.getSize() %></td>
             <td><%= p.getFacing() %></td>
             <td><%= p.getType() %></td>
             <td><%= p.getRoadWidth() %></td>
-            <td><%= (p.getStatus() != null) ? p.getStatus().toString() : "-" %></td>
-            <td><%= (p.getCustomer() != null) ? p.getCustomer().getName() : "-" %></td>
+            <td data-status="<%= p.getStatus() != null ? p.getStatus().toString().toUpperCase() : "" %>"><%= p.getStatus() %></td>
+            <td><%= p.getCustomer() != null ? p.getCustomer().getName() : "-" %></td>
             <td><a href="/admin/plots/edit/<%= p.getPlotId() %>">Edit</a></td>
         </tr>
-        <%  }
-        } %>
+    <%
+        }
+    %>
     </tbody>
 </table>
-<% } else { %>
-    <p style="text-align: center; font-weight: bold; color: red;">No plots found.</p>
-<% } %>
+
+<%
+    } else if (selectedProjectId != null) {
+%>
+    <p style="text-align: center; font-weight: bold; color: red;">No plots found for selected project.</p>
+<%
+    }
+%>
 
 </body>
 </html>

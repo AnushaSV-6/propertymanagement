@@ -30,6 +30,18 @@ public class PlotInquirer {
     
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    @Column(name = "plot_size")
+    private String plotSize;
+
+    @Column(name = "plot_facing")
+    private String plotFacing;
+
+    @Column(length = 1000)
+    private String description;
 
 }
 

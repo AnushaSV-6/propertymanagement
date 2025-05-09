@@ -20,7 +20,11 @@ public class PlotService {
     public List<Plot> getAllPlots() throws Exception {
         return plotDAO.getAll();
     }
+    public List<Plot> getPlotsByProjectId(int projectId) throws Exception {
+        return plotDAO.getByProjectId(projectId);
+    }
 
+    
     public Plot getPlotById(int id) throws Exception {
         return plotDAO.getById(id);
     }

@@ -79,6 +79,21 @@ public class PlotDAO {
             return list;
         }
     }
+    public List<Plot> getByProjectId(int projectId) throws Exception {
+        String sql = QueryLoader.getQuery("plot.selectByProject");
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, projectId);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Plot> list = new ArrayList<>();
+                while (rs.next()) {
+                    list.add(rowMapper.mapRow(rs, rs.getRow()));
+                }
+                return list;
+            }
+        }
+    }
 
     public Plot getById(int id) throws Exception {
         String sql = QueryLoader.getQuery("plot.selectById");

@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Manage Projects</title>
+<title>Manage Plots</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -46,14 +46,14 @@ h2 {
 <body>
 
 	<div class="container">
-		<h2>Manage Projects</h2>
+		<h2>Manage Plots</h2>
 
 		<a href="<%= request.getContextPath() %>/admin/plots/add"
 			class="btn btn-primary btn-option">Add Plot</a> <a
 			href="<%= request.getContextPath() %>/admin/plots/edit"
 			class="btn btn-warning btn-option">Update Plot</a> <a
 			href="<%= request.getContextPath() %>/admin/plots/list"
-			class="btn btn-success btn-option">View Projects</a>
+			class="btn btn-success btn-option">View Plots</a>
 	</div>
 
 </body>

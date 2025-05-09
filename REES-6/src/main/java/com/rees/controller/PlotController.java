@@ -70,14 +70,24 @@ public class PlotController {
     }
 
     @GetMapping("/list")
-    public String viewPlots(Model model) {
-        try {
-            List<Plot> plots = plotService.getAllPlots();
-            model.addAttribute("plots", plots);
-        } catch (Exception e) {
-            model.addAttribute("error", "Unable to load plots");
-            e.printStackTrace();  // Print stack trace to debug the error
+    public String viewPlots(@RequestParam(value = "projectId", required = false) Integer projectId, Model model) throws Exception {
+        // Load all projects for the dropdown
+        List<Project> projects = projectService.getAllProjects();
+        model.addAttribute("projects", projects);
+
+        List<Plot> plots;
+
+        if (projectId != null) {
+            plots = plotService.getPlotsByProjectId(projectId);
+            model.addAttribute("selectedProjectId", projectId); // for dropdown pre-selection
+        } else {
+            plots = plotService.getAllPlots(); // show all plots when no filter is applied
         }
-        return "listPlot";  
+
+        model.addAttribute("plots", plots);
+        return "listPlot";
     }
+
+
 }
+
