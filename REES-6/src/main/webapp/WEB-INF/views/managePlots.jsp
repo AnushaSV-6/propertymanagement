@@ -50,8 +50,7 @@ h2 {
 
 		<a href="<%= request.getContextPath() %>/admin/plots/add"
 			class="btn btn-primary btn-option">Add Plot</a> <a
-			href="<%= request.getContextPath() %>/admin/plots/edit"
-			class="btn btn-warning btn-option">Update Plot</a> <a
+			
 			href="<%= request.getContextPath() %>/admin/plots/list"
 			class="btn btn-success btn-option">View Plots</a>
 	</div>

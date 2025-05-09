@@ -65,12 +65,12 @@ h3 {
 			</div>
 			<div class="mb-3">
 				<label for="totalArea" class="form-label">Total Area</label> <input
-					type="number" step="0.01" name="totalArea" class="form-control"
+					type="text"  name="totalArea" class="form-control"
 					required>
 			</div>
 			<div class="mb-3">
 				<label for="saleableArea" class="form-label">Saleable Area</label> <input
-					type="number" step="0.01" name="saleableArea" class="form-control"
+					type="text" name="saleableArea" class="form-control"
 					required>
 			</div>
 			<div class="mb-3">
@@ -87,7 +87,7 @@ h3 {
 					<option value="REGISTERED">REGISTERED</option>
 					<option value="COMPLETED">COMPLETED</option>
 					<option value="PURCHASED">PURCHASED</option>
-					<option value="UNDER_AGREEMENT">UNDER AGREEMENT</option>
+					<option value="UNDERAGREEMENT">UNDER AGREEMENT</option>
 					<option value="JV">JV</option>
 				</select>
 			</div>

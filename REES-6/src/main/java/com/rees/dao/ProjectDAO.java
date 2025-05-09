@@ -29,11 +29,13 @@ public class ProjectDAO {
             ps.setString(1, project.getProjectName());
             ps.setString(2, project.getSurveyNumber());
             ps.setString(3, project.getLocation());
-            ps.setDouble(4, project.getTotalArea());
-            ps.setDouble(5, project.getSaleableArea());
+            ps.setString(4, project.getTotalArea());
+            ps.setString(5, project.getSaleableArea());
             ps.setString(6, project.getProjectType().name());
             ps.setString(7, project.getProjectStatus().name());
             ps.setString(8, project.getMapPdf());
+            ps.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
+
 
             ps.executeUpdate();  // Execute the insert query
 
@@ -58,8 +60,8 @@ public class ProjectDAO {
                 project.setProjectName(rs.getString("project_name"));
                 project.setSurveyNumber(rs.getString("survey_number"));
                 project.setLocation(rs.getString("location"));
-                project.setTotalArea(rs.getDouble("total_area"));
-                project.setSaleableArea(rs.getDouble("saleable_area"));
+                project.setTotalArea(rs.getString("total_area"));
+                project.setSaleableArea(rs.getString("saleable_area"));
                 project.setProjectType(ProjectType.valueOf(rs.getString("project_type").trim().toUpperCase()));
                 project.setProjectStatus(ProjectStatus.valueOf(rs.getString("project_status").trim().toUpperCase()));
                 project.setMapPdf(rs.getString("map_pdf"));
@@ -90,8 +92,8 @@ public class ProjectDAO {
                     project.setProjectName(rs.getString("project_name"));
                     project.setSurveyNumber(rs.getString("survey_number"));
                     project.setLocation(rs.getString("location"));
-                    project.setTotalArea(rs.getDouble("total_area"));
-                    project.setSaleableArea(rs.getDouble("saleable_area"));
+                    project.setTotalArea(rs.getString("total_area"));
+                    project.setSaleableArea(rs.getString("saleable_area"));
                     project.setProjectType(ProjectType.valueOf(rs.getString("project_type").trim().toUpperCase()));
                     project.setProjectStatus(ProjectStatus.valueOf(rs.getString("project_status").trim().toUpperCase()));
                     project.setMapPdf(rs.getString("map_pdf"));
@@ -114,12 +116,14 @@ public class ProjectDAO {
             ps.setString(1, project.getProjectName());
             ps.setString(2, project.getSurveyNumber());
             ps.setString(3, project.getLocation());
-            ps.setDouble(4, project.getTotalArea());
-            ps.setDouble(5, project.getSaleableArea());
+            ps.setString(4, project.getTotalArea());
+            ps.setString(5, project.getSaleableArea());
             ps.setString(6, project.getProjectType().name());
             ps.setString(7, project.getProjectStatus().name());
             ps.setString(8, project.getMapPdf());
-            ps.setInt(9, project.getProjectId());
+            ps.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
+
+            ps.setInt(10, project.getProjectId());
 
             int rows = ps.executeUpdate();
             System.out.println("Rows affected: " + rows);

@@ -27,10 +27,10 @@ public class Project {
     private String location;
 
     @Column(name = "total_area", nullable = false)
-    private double totalArea;
+    private String totalArea;
 
     @Column(name = "saleable_area", nullable = false)
-    private double saleableArea;
+    private String saleableArea;
 
     @Column(name = "map_pdf")
     private String mapPdf;
@@ -51,6 +51,9 @@ public class Project {
     
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
+    
+    @Column(name = "updated_at", columnDefinition = "DATETIME(6)")
+    private Timestamp updatedAt;
     
    
     public enum ProjectType {

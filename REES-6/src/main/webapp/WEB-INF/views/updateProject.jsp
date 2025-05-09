@@ -60,10 +60,10 @@
         <input type="text" name="location" value="<%=selectedProject.getLocation()%>" /><br/>
 
         <label>Total Area:</label>
-        <input type="number" name="totalArea" step="0.01" value="<%=selectedProject.getTotalArea()%>" /><br/>
+        <input type="text" name="totalArea"  value="<%=selectedProject.getTotalArea()%>" /><br/>
 
         <label>Saleable Area:</label>
-        <input type="number" name="saleableArea" step="0.01" value="<%=selectedProject.getSaleableArea()%>" /><br/>
+        <input type="text" name="saleableArea"  value="<%=selectedProject.getSaleableArea()%>" /><br/>
 
         <label>Project Type:</label>
         <select name="projectType">
