@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
+   <style>
         body {
             font-family: "Poppins", Arial, sans-serif;
             background: url('<%= request.getContextPath() %>/images/admin.jpg') no-repeat center center fixed;
@@ -45,18 +45,31 @@
         }
 
         .dashboard-card {
-            background: #007bff;
-            color: white;
             padding: 15px 20px;
             border-radius: 8px;
             text-decoration: none;
             font-size: 18px;
             font-weight: bold;
             transition: background 0.3s ease-in-out, transform 0.2s;
+            color: white;
+            display: block;
         }
 
-        .dashboard-card:hover {
+        .dashboard-card-blue {
+            background: #007bff;
+        }
+
+        .dashboard-card-blue:hover {
             background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .dashboard-card-red {
+            background: #dc3545;
+        }
+
+        .dashboard-card-red:hover {
+            background: #b71c1c;
             transform: scale(1.05);
         }
 
@@ -84,11 +97,11 @@
     <p>You have admin privileges.</p>
 
     <div class="dashboard-menu">
-        <a href="<%= request.getContextPath() %>/admin/projects" class="dashboard-card">Manage Projects</a>
-        <a href="<%= request.getContextPath() %>/admin/plots" class="dashboard-card">Manage Plots</a>
-        <a href="<%= request.getContextPath() %>/admin/customers" class="dashboard-card">Manage Customers</a>
-        <a href="<%= request.getContextPath() %>/admin/sales" class="dashboard-card">Manage Sales</a>
-<a href="<%= request.getContextPath() %>/admin/inquirer" class="dashboard-card">Manage Plot Inquiries</a>
+        <a href="<%= request.getContextPath() %>/admin/projects" class="dashboard-card dashboard-card-blue">Manage Projects</a>
+        <a href="<%= request.getContextPath() %>/admin/plots" class="dashboard-card dashboard-card-blue">Manage Plots</a>
+        <a href="<%= request.getContextPath() %>/admin/customers" class="dashboard-card dashboard-card-red">Manage Customers</a>
+        <a href="<%= request.getContextPath() %>/admin/sales" class="dashboard-card dashboard-card-red">Manage Sales</a>
+<a href="<%= request.getContextPath() %>/admin/inquirer" class="dashboard-card dashboard-card-red">Manage Plot Inquiries</a>
     </div>
 
     <button class="logout-btn" onclick="window.location.href='<%= request.getContextPath() %>/logout'">Logout</button>

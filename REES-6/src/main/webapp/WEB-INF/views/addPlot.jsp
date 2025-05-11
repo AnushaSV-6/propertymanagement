@@ -19,10 +19,20 @@
 </head>
 <body>
     <h2 style="text-align:center;">Add Plot</h2>
-    <% String msg = (String) request.getAttribute("msg"); %>
-<% if (msg != null) { %>
-    <p style="color: green; text-align:center;"><%= msg %></p>
-<% } %>
+   <%
+    String message = (String) request.getAttribute("message");
+    String error = (String) request.getAttribute("error");
+
+    if (message != null || error != null) {
+%>
+    <p style="text-align:center; color: <%= message != null ? "green" : "red" %>;">
+        <%= message != null ? message : error %>
+    </p>
+<%
+    }
+%>
+
+
     
     <form action="/admin/plots/add" method="post">
         <label>Project:</label>

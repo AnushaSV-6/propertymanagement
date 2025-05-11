@@ -1,12 +1,13 @@
 package com.rees.controller;
 
-import com.rees.model.User;
-import com.rees.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import com.rees.model.User;
+import com.rees.service.*;
 
 @Controller
 public class LoginController {

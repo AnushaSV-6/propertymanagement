@@ -53,6 +53,14 @@
                 }
             });
         }
+
+        // Optional: Apply status filtering on page load based on selected status (if any)
+        window.onload = function() {
+            const selectedStatus = document.querySelector('input[name="status"]:checked');
+            if (selectedStatus) {
+                filterByStatus(selectedStatus.value);
+            }
+        }
     </script>
 </head>
 <body>
@@ -60,7 +68,7 @@
 <h2>Plot List</h2>
 
 <div class="filter-form">
-    <form action="list" method="get">
+    <form action="/admin/plots/list" method="GET">
         <label for="projectId">Select Project:</label>
         <select name="projectId" id="projectId" required>
             <option value="">-- Select --</option>
@@ -69,7 +77,7 @@
                     for (Project proj : projects) {
                         String selected = (selectedProjectId != null && proj.getProjectId() == selectedProjectId) ? "selected" : "";
             %>
-                <option value="<%= proj.getProjectId() %>" <%= selected %>><%= proj.getProjectName() %></option>
+            <option value="<%= proj.getProjectId() %>" <%= selected %>><%= proj.getProjectName() %></option>
             <%
                     }
                 }
@@ -119,7 +127,12 @@
             <td><%= p.getRoadWidth() %></td>
             <td data-status="<%= p.getStatus() != null ? p.getStatus().toString().toUpperCase() : "" %>"><%= p.getStatus() %></td>
             <td><%= p.getCustomer() != null ? p.getCustomer().getName() : "-" %></td>
-            <td><a href="/admin/plots/edit/<%= p.getPlotId() %>">Edit</a></td>
+            <td>
+                <form action="/admin/plots/edit" method="post" style="margin: 0;">
+                    <input type="hidden" name="plotId" value="<%= p.getPlotId() %>" />
+                    <button type="submit">Edit</button>
+                </form>
+            </td>
         </tr>
     <%
         }

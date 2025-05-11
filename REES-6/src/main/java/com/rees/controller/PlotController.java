@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -38,56 +37,113 @@ public class PlotController {
     }
 
     @GetMapping("/add")
-    public String showAddPlotForm(Model model, @RequestParam(value = "msg", required = false) String msg) throws Exception {
+    public String showAddPlotForm(HttpSession session, Model model) {
+        String email = (String) session.getAttribute("email");
+        User.Role role = (User.Role) session.getAttribute("role");
+
+        if (email == null || role != User.Role.ADMIN) {
+            return "redirect:/";
+        }
+
         model.addAttribute("plot", new Plot());
         model.addAttribute("projects", projectService.getAllProjects());
-        model.addAttribute("msg", msg);
+
         return "addPlot";
     }
 
     @PostMapping("/add")
-    public String savePlot(@ModelAttribute Plot plot, RedirectAttributes redirectAttributes) throws Exception {
-        plot.setStatus(Plot.PlotStatus.AVAILABLE);
-        plotService.addPlot(plot);
-        redirectAttributes.addAttribute("msg", "Plot added successfully!");
-        return "redirect:/admin/plots/add";
+    public String savePlot(@ModelAttribute Plot plot, HttpSession session, Model model) {
+        String email = (String) session.getAttribute("email");
+        User.Role role = (User.Role) session.getAttribute("role");
+
+        if (email == null || role != User.Role.ADMIN) {
+            return "redirect:/";
+        }
+
+        try {
+            plot.setStatus(Plot.PlotStatus.AVAILABLE);
+            plotService.addPlot(plot);
+            model.addAttribute("message", "Plot added successfully!");
+        } catch (Exception e) {
+            model.addAttribute("error", "Error adding plot: " + e.getMessage());
+        }
+
+        model.addAttribute("plot", new Plot()); // reset form
+        model.addAttribute("projects", projectService.getAllProjects());
+        return "addPlot";
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditPlotForm(@PathVariable("id") int plotId, Model model, @RequestParam(value = "msg", required = false) String msg) throws Exception {
-        Plot plot = plotService.getPlotById(plotId);
-        model.addAttribute("plot", plot);
-        model.addAttribute("projects", projectService.getAllProjects());
-        model.addAttribute("msg", msg);
+    @PostMapping("/edit")
+    public String showEditPlotForm(@RequestParam("plotId") int plotId, HttpSession session, Model model) {
+        String email = (String) session.getAttribute("email");
+        User.Role role = (User.Role) session.getAttribute("role");
+
+        if (email == null || role != User.Role.ADMIN) {
+            return "redirect:/";
+        }
+
+        try {
+            Plot plot = plotService.getPlotById(plotId);
+            model.addAttribute("plot", plot);
+            model.addAttribute("projects", projectService.getAllProjects());
+        } catch (Exception e) {
+            model.addAttribute("error", "Error loading plot: " + e.getMessage());
+        }
+
         return "editPlot";
     }
 
+
     @PostMapping("/update")
-    public String updatePlot(@ModelAttribute Plot plot, RedirectAttributes redirectAttributes) throws Exception {
-        plotService.updatePlot(plot);
-        redirectAttributes.addAttribute("msg", "Plot updated successfully!");
-        return "redirect:/admin/plots/edit/" + plot.getPlotId();
+    public String updatePlot(@ModelAttribute Plot plot, HttpSession session, Model model) {
+        String email = (String) session.getAttribute("email");
+        User.Role role = (User.Role) session.getAttribute("role");
+
+        if (email == null || role != User.Role.ADMIN) {
+            return "redirect:/";
+        }
+
+        try {
+            plotService.updatePlot(plot);
+            model.addAttribute("message", "Plot updated successfully!");
+        } catch (Exception e) {
+            model.addAttribute("error", "Error updating plot: " + e.getMessage());
+        }
+
+        model.addAttribute("plot", plot);
+        model.addAttribute("projects", projectService.getAllProjects());
+        return "editPlot";
     }
 
     @GetMapping("/list")
-    public String viewPlots(@RequestParam(value = "projectId", required = false) Integer projectId, Model model) throws Exception {
-        // Load all projects for the dropdown
-        List<Project> projects = projectService.getAllProjects();
-        model.addAttribute("projects", projects);
+    public String viewPlots(@RequestParam(value = "projectId", required = false) Integer projectId,
+                            HttpSession session, Model model) {
+        String email = (String) session.getAttribute("email");
+        User.Role role = (User.Role) session.getAttribute("role");
 
-        List<Plot> plots;
-
-        if (projectId != null) {
-            plots = plotService.getPlotsByProjectId(projectId);
-            model.addAttribute("selectedProjectId", projectId); // for dropdown pre-selection
-        } else {
-            plots = plotService.getAllPlots(); // show all plots when no filter is applied
+        if (email == null || role != User.Role.ADMIN) {
+            return "redirect:/";
         }
 
-        model.addAttribute("plots", plots);
-        return "listPlot";
+        try {
+            // Fetch all projects for the dropdown
+            List<Project> projects = projectService.getAllProjects();
+            model.addAttribute("projects", projects);
+
+            List<Plot> plots;
+            // If projectId is selected, filter by projectId, otherwise fetch all plots
+            if (projectId != null) {
+                plots = plotService.getPlotsByProjectId(projectId);
+                model.addAttribute("selectedProjectId", projectId);
+            } else {
+                plots = plotService.getAllPlots();
+            }
+
+            model.addAttribute("plots", plots);
+        } catch (Exception e) {
+            model.addAttribute("error", "Error loading plots: " + e.getMessage());
+        }
+
+        return "listPlot";  // Or your desired JSP name
     }
-
-
 }
-
