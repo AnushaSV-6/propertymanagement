@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Controller
@@ -26,61 +27,68 @@ public class PlotController {
 
     @GetMapping
     public String showPlotPage(HttpSession session) {
-        String email = (String) session.getAttribute("email");
-        User.Role role = (User.Role) session.getAttribute("role");
-
-        if (email == null || role != User.Role.ADMIN) {
-            return "redirect:/";
-        }
-
+        if (!isAdmin(session)) return "redirect:/";
         return "managePlots";
     }
 
+    // === Add Plot ===
     @GetMapping("/add")
     public String showAddPlotForm(HttpSession session, Model model) {
-        String email = (String) session.getAttribute("email");
-        User.Role role = (User.Role) session.getAttribute("role");
-
-        if (email == null || role != User.Role.ADMIN) {
-            return "redirect:/";
-        }
+        if (!isAdmin(session)) return "redirect:/";
 
         model.addAttribute("plot", new Plot());
         model.addAttribute("projects", projectService.getAllProjects());
-
         return "addPlot";
     }
 
     @PostMapping("/add")
     public String savePlot(@ModelAttribute Plot plot, HttpSession session, Model model) {
-        String email = (String) session.getAttribute("email");
-        User.Role role = (User.Role) session.getAttribute("role");
-
-        if (email == null || role != User.Role.ADMIN) {
-            return "redirect:/";
-        }
+        if (!isAdmin(session)) return "redirect:/";
 
         try {
             plot.setStatus(Plot.PlotStatus.AVAILABLE);
+            plot.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             plotService.addPlot(plot);
             model.addAttribute("message", "Plot added successfully!");
         } catch (Exception e) {
             model.addAttribute("error", "Error adding plot: " + e.getMessage());
         }
 
-        model.addAttribute("plot", new Plot()); // reset form
+        model.addAttribute("plot", new Plot());
         model.addAttribute("projects", projectService.getAllProjects());
         return "addPlot";
     }
 
+    // === List Plots ===
+    @GetMapping("/list")
+    public String viewPlots(@RequestParam(value = "projectId", required = false) Integer projectId,
+                            HttpSession session, Model model) {
+        if (!isAdmin(session)) return "redirect:/";
+
+        try {
+            List<Project> projects = projectService.getAllProjects();
+            model.addAttribute("projects", projects);
+
+            List<Plot> plots;
+            if (projectId != null) {
+                plots = plotService.getPlotsByProjectId(projectId);
+                model.addAttribute("selectedProjectId", projectId);
+            } else {
+                plots = plotService.getAllPlots();
+            }
+
+            model.addAttribute("plots", plots);
+        } catch (Exception e) {
+            model.addAttribute("error", "Error loading plots: " + e.getMessage());
+        }
+
+        return "listPlot";
+    }
+
+    // === Edit Plot Form ===
     @PostMapping("/edit")
     public String showEditPlotForm(@RequestParam("plotId") int plotId, HttpSession session, Model model) {
-        String email = (String) session.getAttribute("email");
-        User.Role role = (User.Role) session.getAttribute("role");
-
-        if (email == null || role != User.Role.ADMIN) {
-            return "redirect:/";
-        }
+        if (!isAdmin(session)) return "redirect:/";
 
         try {
             Plot plot = plotService.getPlotById(plotId);
@@ -93,15 +101,10 @@ public class PlotController {
         return "editPlot";
     }
 
-
+    // === Update Plot ===
     @PostMapping("/update")
     public String updatePlot(@ModelAttribute Plot plot, HttpSession session, Model model) {
-        String email = (String) session.getAttribute("email");
-        User.Role role = (User.Role) session.getAttribute("role");
-
-        if (email == null || role != User.Role.ADMIN) {
-            return "redirect:/";
-        }
+        if (!isAdmin(session)) return "redirect:/";
 
         try {
             plotService.updatePlot(plot);
@@ -115,35 +118,10 @@ public class PlotController {
         return "editPlot";
     }
 
-    @GetMapping("/list")
-    public String viewPlots(@RequestParam(value = "projectId", required = false) Integer projectId,
-                            HttpSession session, Model model) {
+    // === Utility: check admin session ===
+    private boolean isAdmin(HttpSession session) {
         String email = (String) session.getAttribute("email");
         User.Role role = (User.Role) session.getAttribute("role");
-
-        if (email == null || role != User.Role.ADMIN) {
-            return "redirect:/";
-        }
-
-        try {
-            // Fetch all projects for the dropdown
-            List<Project> projects = projectService.getAllProjects();
-            model.addAttribute("projects", projects);
-
-            List<Plot> plots;
-            // If projectId is selected, filter by projectId, otherwise fetch all plots
-            if (projectId != null) {
-                plots = plotService.getPlotsByProjectId(projectId);
-                model.addAttribute("selectedProjectId", projectId);
-            } else {
-                plots = plotService.getAllPlots();
-            }
-
-            model.addAttribute("plots", plots);
-        } catch (Exception e) {
-            model.addAttribute("error", "Error loading plots: " + e.getMessage());
-        }
-
-        return "listPlot";  // Or your desired JSP name
+        return email != null && role == User.Role.ADMIN;
     }
 }

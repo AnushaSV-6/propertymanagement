@@ -35,7 +35,7 @@
 
 
     
-    <form action="/admin/plots/update" method="post">
+   <form action="${pageContext.request.contextPath}/admin/plots/update" method="post">
         <input type="hidden" name="plotId" value="<%= plot.getPlotId() %>" />
 
         <label>Project:</label>

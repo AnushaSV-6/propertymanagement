@@ -14,7 +14,7 @@
 
 	<groupId>com.rees</groupId>
 	<artifactId>rees</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>version-1</version>
 	<packaging>war</packaging>
 
 	<name>REES-6</name>
@@ -132,7 +132,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.rees.ReesApplication</mainClass>
+					<mainClass>com.rees.Rees6Application</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

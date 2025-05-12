@@ -4,11 +4,13 @@
 <%@ page import="com.rees.model.Plot" %>
 <%
     List<Project> projects = (List<Project>) request.getAttribute("projects");
+    String message = (String) request.getAttribute("message");
+    String error = (String) request.getAttribute("error");
 %>
 <html>
 <head>
     <title>Add Plot</title>
-    <style>
+<style>
         body { font-family: Arial; background-color: #f9f9f9; padding: 40px; }
         form { max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; }
         input, select { width: 100%; padding: 10px; margin: 10px 0; }
@@ -18,49 +20,51 @@
     </style>
 </head>
 <body>
-    <h2 style="text-align:center;">Add Plot</h2>
-   <%
-    String message = (String) request.getAttribute("message");
-    String error = (String) request.getAttribute("error");
+	<div class="container">
+		<h3>Add New Plot</h3>
 
-    if (message != null || error != null) {
-%>
-    <p style="text-align:center; color: <%= message != null ? "green" : "red" %>;">
-        <%= message != null ? message : error %>
-    </p>
-<%
-    }
-%>
+		<%-- Displaying the message if present --%>
+		<% if (message != null) { %>
+		<div class="alert alert-success" role="alert">
+			<%= message %>
+		</div>
+		<% } %>
 
+		<%-- Displaying the error message if present --%>
+		<% if (error != null) { %>
+		<div class="alert alert-danger" role="alert">
+			<%= error %>
+		</div>
+		<% } %>
 
-    
-    <form action="/admin/plots/add" method="post">
-        <label>Project:</label>
-        <select name="project.projectId" required>
-            <% for (Project p : projects) { %>
-                <option value="<%= p.getProjectId() %>"><%= p.getProjectName() %></option>
-            <% } %>
-        </select>
+<form action="${pageContext.request.contextPath}/admin/plots/add"
+			method="post">
+	        <select name="project.projectId" required>
+	            <% for (Project p : projects) { %>
+	                <option value="<%= p.getProjectId() %>"><%= p.getProjectName() %></option>
+	            <% } %>
+	        </select>
 
-        <label>Site Number:</label>
-        <input type="text" name="siteNumber" required />
+	        <label>Site Number:</label>
+	        <input type="text" name="siteNumber" required />
 
-        <label>Size:</label>
-        <input type="text" name="size" required />
+	        <label>Size:</label>
+	        <input type="text" name="size" required />
 
-        <label>Facing:</label>
-        <input type="text" name="facing" required />
+	        <label>Facing:</label>
+	        <input type="text" name="facing" required />
 
-        <label>Type:</label>
-        <select name="type" required>
-            <option value="REGULAR">Regular</option>
-            <option value="CORNER">Corner</option>
-        </select>
+	        <label>Type:</label>
+	        <select name="type" required>
+	            <option value="REGULAR">Regular</option>
+	            <option value="CORNER">Corner</option>
+	        </select>
 
-        <label>Road Width:</label>
-        <input type="text" name="roadWidth" required />
+	        <label>Road Width:</label>
+	        <input type="text" name="roadWidth" required />
 
-        <button type="submit">Save Plot</button>
-    </form>
+	        <button type="submit">Save Plot</button>
+	    </form>
+	</div>
 </body>
 </html>

@@ -68,7 +68,7 @@
 <h2>Plot List</h2>
 
 <div class="filter-form">
-    <form action="/admin/plots/list" method="GET">
+<form action="${pageContext.request.contextPath}/admin/plots/list" method="GET">
         <label for="projectId">Select Project:</label>
         <select name="projectId" id="projectId" required>
             <option value="">-- Select --</option>
@@ -128,7 +128,7 @@
             <td data-status="<%= p.getStatus() != null ? p.getStatus().toString().toUpperCase() : "" %>"><%= p.getStatus() %></td>
             <td><%= p.getCustomer() != null ? p.getCustomer().getName() : "-" %></td>
             <td>
-                <form action="/admin/plots/edit" method="post" style="margin: 0;">
+                <form action="${pageContext.request.contextPath}/admin/plots/edit" method="post" style="margin: 0;">
                     <input type="hidden" name="plotId" value="<%= p.getPlotId() %>" />
                     <button type="submit">Edit</button>
                 </form>
