@@ -46,6 +46,8 @@ h2 {
 <body>
 
 	<div class="container">
+	<a href="${pageContext.request.contextPath}/adminDashboard" class="btn btn-secondary mb-3">&larr;  Back to Admin Dashboard
+			</a>
 		<h2>Manage Plots</h2>
 
 		<a href="<%= request.getContextPath() %>/admin/plots/add"

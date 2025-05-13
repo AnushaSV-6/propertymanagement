@@ -29,6 +29,8 @@ h3 {
 </head>
 <body>
 	<div class="container">
+	<a href="${pageContext.request.contextPath}/admin/projects" class="btn btn-secondary mb-3">&larr; Back to Manage Projects</a>
+	
 		<h3>Add New Project</h3>
 		<% 
     String message = (String) request.getAttribute("message");

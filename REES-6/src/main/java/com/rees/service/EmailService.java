@@ -55,7 +55,7 @@ public class EmailService {
         String subject = "Welcome to REES";
         String messageText = "Hello " + name + ",\n\nYour account has been created successfully.\n" +
                              "Yourpassword is: " + password +
-                             "Regards,\nREES Team";
+                             "\n\n\nRegards,\nREES Team";
         return sendEmail(email, subject, messageText);
     }
 

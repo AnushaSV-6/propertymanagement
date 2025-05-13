@@ -16,15 +16,47 @@
         }
         h2 {
             text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        .filter-form {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .filter-form label {
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        .filter-form select, .filter-form button {
+            padding: 10px 15px;
+            font-size: 14px;
+            margin-left: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .filter-form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .filter-form button:hover {
+            background-color: #0056b3;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #fff;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         th, td {
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             text-align: center;
         }
@@ -32,14 +64,57 @@
             background-color: #007bff;
             color: white;
         }
-        .filter-form {
+        td[data-status="AVAILABLE"] {
+            color: green;
+            font-weight: bold;
+        }
+        td[data-status="BOOKED"] {
+            color: orange;
+            font-weight: bold;
+        }
+        td[data-status="SOLD"] {
+            color: red;
+            font-weight: bold;
+        }
+        form button {
+            padding: 5px 12px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #218838;
+        }
+        .status-radio {
             text-align: center;
             margin-bottom: 20px;
         }
-        .filter-form label {
-            margin: 0 10px;
-            font-weight: bold;
+        .status-radio label {
+            margin: 0 12px;
         }
+        .no-data {
+            text-align: center;
+            font-weight: bold;
+            color: red;
+            margin-top: 30px;
+        }
+        .back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 18px;
+    background-color: #6c757d; /* Gray background similar to Bootstrap's secondary */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+.back-link:hover {
+    background-color: #5a6268;
+}
+        
     </style>
     <script>
         function filterByStatus(status) {
@@ -54,8 +129,7 @@
             });
         }
 
-        // Optional: Apply status filtering on page load based on selected status (if any)
-        window.onload = function() {
+        window.onload = function () {
             const selectedStatus = document.querySelector('input[name="status"]:checked');
             if (selectedStatus) {
                 filterByStatus(selectedStatus.value);
@@ -65,58 +139,61 @@
 </head>
 <body>
 
-<h2>Plot List</h2>
+<div class="container">
+	<a href="${pageContext.request.contextPath}/admin/plots" class="back-link">&larr; Back to Manage Plots</a>
 
-<div class="filter-form">
-<form action="${pageContext.request.contextPath}/admin/plots/list" method="GET">
-        <label for="projectId">Select Project:</label>
-        <select name="projectId" id="projectId" required>
-            <option value="">-- Select --</option>
-            <%
-                if (projects != null) {
-                    for (Project proj : projects) {
-                        String selected = (selectedProjectId != null && proj.getProjectId() == selectedProjectId) ? "selected" : "";
-            %>
-            <option value="<%= proj.getProjectId() %>" <%= selected %>><%= proj.getProjectName() %></option>
-            <%
+    <h2>Plot List</h2>
+
+    <div class="filter-form">
+        <form action="${pageContext.request.contextPath}/admin/plots/list" method="GET">
+            <label for="projectId">Select Project:</label>
+            <select name="projectId" id="projectId" required>
+                <option value="">-- Select --</option>
+                <%
+                    if (projects != null) {
+                        for (Project proj : projects) {
+                            String selected = (selectedProjectId != null && proj.getProjectId() == selectedProjectId) ? "selected" : "";
+                %>
+                <option value="<%= proj.getProjectId() %>" <%= selected %>><%= proj.getProjectName() %></option>
+                <%
+                        }
                     }
-                }
-            %>
-        </select>
-        <button type="submit">Load</button>
-    </form>
-</div>
+                %>
+            </select>
+            <button type="submit">Load</button>
+        </form>
+    </div>
 
-<%
-    if (plots != null && !plots.isEmpty()) {
-%>
-
-<div class="filter-form">
-    <label><input type="radio" name="status" value="ALL" checked onclick="filterByStatus('ALL')"> All</label>
-    <label><input type="radio" name="status" value="AVAILABLE" onclick="filterByStatus('AVAILABLE')"> Available</label>
-    <label><input type="radio" name="status" value="BOOKED" onclick="filterByStatus('BOOKED')"> Booked</label>
-    <label><input type="radio" name="status" value="SALED" onclick="filterByStatus('SALED')"> Saled</label>
-</div>
-
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Project</th>
-        <th>Site No</th>
-        <th>Size</th>
-        <th>Facing</th>
-        <th>Type</th>
-        <th>Road Width</th>
-        <th>Status</th>
-        <th>Customer</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
     <%
-        for (Plot p : plots) {
+        if (plots != null && !plots.isEmpty()) {
     %>
+
+    <div class="status-radio">
+        <label><input type="radio" name="status" value="ALL" checked onclick="filterByStatus('ALL')"> All</label>
+        <label><input type="radio" name="status" value="AVAILABLE" onclick="filterByStatus('AVAILABLE')"> Available</label>
+        <label><input type="radio" name="status" value="BOOKED" onclick="filterByStatus('BOOKED')"> Booked</label>
+        <label><input type="radio" name="status" value="SOLD" onclick="filterByStatus('SOLD')"> Sold</label>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Project</th>
+            <th>Site No</th>
+            <th>Size</th>
+            <th>Facing</th>
+            <th>Type</th>
+            <th>Road Width</th>
+            <th>Status</th>
+            <th>Customer</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+            for (Plot p : plots) {
+        %>
         <tr>
             <td><%= p.getPlotId() %></td>
             <td><%= p.getProject() != null ? p.getProject().getProjectName() : "-" %></td>
@@ -134,19 +211,20 @@
                 </form>
             </td>
         </tr>
+        <%
+            }
+        %>
+        </tbody>
+    </table>
+
+    <%
+        } else if (selectedProjectId != null) {
+    %>
+    <div class="no-data">No plots found for selected project.</div>
     <%
         }
     %>
-    </tbody>
-</table>
-
-<%
-    } else if (selectedProjectId != null) {
-%>
-    <p style="text-align: center; font-weight: bold; color: red;">No plots found for selected project.</p>
-<%
-    }
-%>
+</div>
 
 </body>
 </html>

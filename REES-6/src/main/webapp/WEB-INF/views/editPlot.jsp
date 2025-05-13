@@ -5,74 +5,114 @@
 <%
     Plot plot = (Plot) request.getAttribute("plot");
     List<Project> projects = (List<Project>) request.getAttribute("projects");
+    String message = (String) request.getAttribute("message");
+    String error = (String) request.getAttribute("error");
 %>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Edit Plot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial; background-color: #f9f9f9; padding: 40px; }
-        form { max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; }
-        label { font-weight: bold; }
-        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #1e7e34; }
+        body {
+            background-color: #f2f2f2;
+            font-family: 'Poppins', sans-serif;
+            padding: 50px;
+        }
+        .container {
+            max-width: 700px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        h3 {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        .btn-success {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+        .back-link {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
-    <h2 style="text-align:center;">Edit Plot</h2>
-   <%
-    String message = (String) request.getAttribute("message");
-    String error = (String) request.getAttribute("error");
 
-    if (message != null || error != null) {
-%>
-    <p style="text-align:center; color: <%= message != null ? "green" : "red" %>;">
-        <%= message != null ? message : error %>
-    </p>
-<%
-    }
-%>
+<div class="container">
+    <a href="${pageContext.request.contextPath}/admin/plots/list" class="btn btn-secondary back-link">&larr; Back to Plot List</a>
+    <h3>Edit Plot</h3>
 
+    <% if (message != null) { %>
+        <div class="alert alert-success"><%= message %></div>
+    <% } %>
+    <% if (error != null) { %>
+        <div class="alert alert-danger"><%= error %></div>
+    <% } %>
 
-    
-   <form action="${pageContext.request.contextPath}/admin/plots/update" method="post">
+    <form action="${pageContext.request.contextPath}/admin/plots/update" method="post">
         <input type="hidden" name="plotId" value="<%= plot.getPlotId() %>" />
 
-        <label>Project:</label>
-        <select name="project.projectId" required>
-            <% for (Project p : projects) { %>
-                <option value="<%= p.getProjectId() %>" <%= p.getProjectId() == plot.getProject().getProjectId() ? "selected" : "" %>>
-                    <%= p.getProjectName() %>
-                </option>
-            <% } %>
-        </select>
+        <div class="mb-3">
+            <label class="form-label">Project</label>
+            <select name="project.projectId" class="form-select" required>
+                <% for (Project p : projects) { %>
+                    <option value="<%= p.getProjectId() %>" <%= p.getProjectId() == plot.getProject().getProjectId() ? "selected" : "" %>>
+                        <%= p.getProjectName() %>
+                    </option>
+                <% } %>
+            </select>
+        </div>
 
-        <label>Site Number:</label>
-        <input type="text" name="siteNumber" value="<%= plot.getSiteNumber() %>" required />
+        <div class="mb-3">
+            <label class="form-label">Site Number</label>
+            <input type="text" name="siteNumber" value="<%= plot.getSiteNumber() %>" class="form-control" required />
+        </div>
 
-        <label>Size:</label>
-        <input type="text" name="size" value="<%= plot.getSize() %>" required />
+        <div class="mb-3">
+            <label class="form-label">Size</label>
+            <input type="text" name="size" value="<%= plot.getSize() %>" class="form-control" required />
+        </div>
 
-        <label>Facing:</label>
-        <input type="text" name="facing" value="<%= plot.getFacing() %>" required />
+        <div class="mb-3">
+            <label class="form-label">Facing</label>
+            <input type="text" name="facing" value="<%= plot.getFacing() %>" class="form-control" required />
+        </div>
 
-        <label>Type:</label>
-        <select name="type">
-            <option value="REGULAR" <%= "REGULAR".equals(plot.getType()) ? "selected" : "" %>>Regular</option>
-            <option value="CORNER" <%= "CORNER".equals(plot.getType()) ? "selected" : "" %>>Corner</option>
-        </select>
+        <div class="mb-3">
+            <label class="form-label">Type</label>
+            <select name="type" class="form-select">
+                <option value="REGULAR" <%= "REGULAR".equals(plot.getType()) ? "selected" : "" %>>Regular</option>
+                <option value="CORNER" <%= "CORNER".equals(plot.getType()) ? "selected" : "" %>>Corner</option>
+            </select>
+        </div>
 
-        <label>Road Width:</label>
-        <input type="text" name="roadWidth" value="<%= plot.getRoadWidth() %>" required />
+        <div class="mb-3">
+            <label class="form-label">Road Width</label>
+            <input type="text" name="roadWidth" value="<%= plot.getRoadWidth() %>" class="form-control" required />
+        </div>
 
-        <label>Status:</label>
-        <select name="status">
-            <option value="AVAILABLE" <%= "AVAILABLE".equals(plot.getStatus().name()) ? "selected" : "" %>>Available</option>
-            <option value="BOOKED" <%= "BOOKED".equals(plot.getStatus().name()) ? "selected" : "" %>>Booked</option>
-            <option value="SALED" <%= "SALED".equals(plot.getStatus().name()) ? "selected" : "" %>>Saled</option>
-        </select>
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+                <option value="AVAILABLE" <%= "AVAILABLE".equals(plot.getStatus().name()) ? "selected" : "" %>>Available</option>
+                <option value="BOOKED" <%= "BOOKED".equals(plot.getStatus().name()) ? "selected" : "" %>>Booked</option>
+                <option value="SOLD" <%= "SOLD".equals(plot.getStatus().name()) ? "selected" : "" %>>Sold</option>
+            </select>
+        </div>
 
-        <button type="submit">Update Plot</button>
+        <button type="submit" class="btn btn-success">Update Plot</button>
     </form>
+</div>
+
 </body>
 </html>

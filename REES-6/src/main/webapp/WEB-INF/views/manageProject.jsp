@@ -46,14 +46,22 @@ h2 {
 <body>
 
 	<div class="container">
+
+		<!-- Back Button -->
+		<div class="text-start mb-3">
+			<a href="${pageContext.request.contextPath}/adminDashboard" class="btn btn-secondary mb-3">&larr;  Back to Admin Dashboard
+			</a>
+		</div>
+
 		<h2>Manage Projects</h2>
 
 		<a href="<%= request.getContextPath() %>/admin/projects/addproject"
-			class="btn btn-primary btn-option">Add Project</a> <a
-			href="<%= request.getContextPath() %>/admin/projects/updateproject"
-			class="btn btn-warning btn-option">Update Project</a> <a
-			href="<%= request.getContextPath() %>/admin/projects/viewProjects"
+			class="btn btn-primary btn-option">Add Project</a> 
+		<a href="<%= request.getContextPath() %>/admin/projects/updateproject"
+			class="btn btn-warning btn-option">Update Project</a> 
+		<a href="<%= request.getContextPath() %>/admin/projects/viewProjects"
 			class="btn btn-success btn-option">View Projects</a>
+
 	</div>
 
 </body>
