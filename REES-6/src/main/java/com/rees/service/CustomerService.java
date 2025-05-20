@@ -16,6 +16,8 @@ public class CustomerService {
     public boolean isPhoneExists(String contact) {
         return customerDAO.isPhoneExists(contact);
     }
+    
+    
 
     public boolean saveCustomer(Customer customer) {
         return customerDAO.saveCustomer(customer);

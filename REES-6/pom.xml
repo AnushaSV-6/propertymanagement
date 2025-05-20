@@ -14,7 +14,7 @@
 
 	<groupId>com.rees</groupId>
 	<artifactId>rees</artifactId>
-	<version>version-1</version>
+	<version>version-2</version>
 	<packaging>war</packaging>
 
 	<name>REES-6</name>

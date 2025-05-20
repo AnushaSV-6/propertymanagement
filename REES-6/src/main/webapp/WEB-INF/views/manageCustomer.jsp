@@ -43,6 +43,8 @@
 <body>
 
 <div class="container">
+<a href="${pageContext.request.contextPath}/adminDashboard" class="btn btn-secondary mb-3">&larr;  Back to Admin Dashboard
+			</a>
     <h2>Manage Customers</h2>
     <a href="${pageContext.request.contextPath}/admin/customers/add" class="btn btn-primary btn-option"> Add Customer</a>
     <a href="${pageContext.request.contextPath}/admin/customers/list" class="btn btn-secondary btn-option"> View Customers</a>

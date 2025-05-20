@@ -30,6 +30,21 @@ public class PlotController {
         if (!isAdmin(session)) return "redirect:/";
         return "managePlots";
     }
+    @GetMapping("/edit")
+    public String showEditPlotFormGet(@RequestParam("plotId") int plotId, HttpSession session, Model model) throws Exception {
+        if (!isAdmin(session)) return "redirect:/";
+
+        Plot plot = plotService.getPlotById(plotId);
+        if (plot == null) {
+            model.addAttribute("error", "Plot not found");
+            return "redirect:/admin/plots/list"; // or show error page
+        }
+        model.addAttribute("plot", plot);
+        model.addAttribute("projects", projectService.getAllProjects());
+
+        return "editPlot";
+    }
+
 
     // === Add Plot ===
     @GetMapping("/add")
@@ -85,21 +100,9 @@ public class PlotController {
         return "listPlot";
     }
 
-    // === Edit Plot Form ===
-    @PostMapping("/edit")
-    public String showEditPlotForm(@RequestParam("plotId") int plotId, HttpSession session, Model model) {
-        if (!isAdmin(session)) return "redirect:/";
+   
 
-        try {
-            Plot plot = plotService.getPlotById(plotId);
-            model.addAttribute("plot", plot);
-            model.addAttribute("projects", projectService.getAllProjects());
-        } catch (Exception e) {
-            model.addAttribute("error", "Error loading plot: " + e.getMessage());
-        }
-
-        return "editPlot";
-    }
+    
 
     // === Update Plot ===
     @PostMapping("/update")

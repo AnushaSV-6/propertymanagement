@@ -99,8 +99,8 @@
     <div class="dashboard-menu">
         <a href="<%= request.getContextPath() %>/admin/projects" class="dashboard-card dashboard-card-blue">Manage Projects</a>
         <a href="<%= request.getContextPath() %>/admin/plots" class="dashboard-card dashboard-card-blue">Manage Plots</a>
-        <a href="<%= request.getContextPath() %>/admin/customers" class="dashboard-card dashboard-card-red">Manage Customers</a>
-        <a href="<%= request.getContextPath() %>/admin/sales" class="dashboard-card dashboard-card-red">Manage Sales</a>
+        <a href="<%= request.getContextPath() %>/admin/customers" class="dashboard-card dashboard-card-blue">Manage Customers</a>
+        <a href="<%= request.getContextPath() %>/admin/sales" class="dashboard-card dashboard-card-blue">Manage Sales</a>
 <a href="<%= request.getContextPath() %>/admin/inquirer" class="dashboard-card dashboard-card-red">Manage Plot Inquiries</a>
     </div>
 

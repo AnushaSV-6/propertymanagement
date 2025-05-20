@@ -31,6 +31,8 @@
 <body>
 
 <div class="container">
+	<a href="${pageContext.request.contextPath}/admin/customers" class="btn btn-secondary mb-3">&larr; Back to Manage Customers</a>
+
     <h2>Add Customer</h2>
 
     <% if (request.getAttribute("message") != null) { %>

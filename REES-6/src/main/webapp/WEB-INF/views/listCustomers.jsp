@@ -27,6 +27,8 @@
 <body>
 
 <div class="container">
+	<a href="${pageContext.request.contextPath}/admin/customers" class="btn btn-secondary mb-3">&larr; Back to Manage Customers</a>
+
     <h2>Customer List</h2>
 
     <% String message = (String) request.getAttribute("message"); %>

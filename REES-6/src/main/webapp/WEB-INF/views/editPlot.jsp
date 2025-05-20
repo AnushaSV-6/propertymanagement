@@ -47,71 +47,78 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <a href="${pageContext.request.contextPath}/admin/plots/list" class="btn btn-secondary back-link">&larr; Back to Plot List</a>
     <h3>Edit Plot</h3>
 
-    <% if (message != null) { %>
-        <div class="alert alert-success"><%= message %></div>
+    <% if (plot == null) { %>
+        <div class="alert alert-danger">
+            Plot not found or not loaded properly. Please go back and try again.
+        </div>
+    <% } else { %>
+
+        <% if (message != null) { %>
+            <div class="alert alert-success"><%= message %></div>
+        <% } %>
+        <% if (error != null) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <form action="${pageContext.request.contextPath}/admin/plots/update" method="post">
+            <input type="hidden" name="plotId" value="<%= plot.getPlotId() %>" />
+
+            <div class="mb-3">
+                <label class="form-label">Project</label>
+                <select name="project.projectId" class="form-select" required>
+                    <% if (projects != null) {
+                        for (Project p : projects) { %>
+                            <option value="<%= p.getProjectId() %>" <%= p.getProjectId() == plot.getProject().getProjectId() ? "selected" : "" %>>
+                                <%= p.getProjectName() %>
+                            </option>
+                    <%  } } %>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Site Number</label>
+                <input type="text" name="siteNumber" value="<%= plot.getSiteNumber() %>" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Size</label>
+                <input type="text" name="size" value="<%= plot.getSize() %>" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Facing</label>
+                <input type="text" name="facing" value="<%= plot.getFacing() %>" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Type</label>
+                <select name="type" class="form-select">
+                    <option value="REGULAR" <%= "REGULAR".equals(plot.getType()) ? "selected" : "" %>>Regular</option>
+                    <option value="CORNER" <%= "CORNER".equals(plot.getType()) ? "selected" : "" %>>Corner</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Road Width</label>
+                <input type="text" name="roadWidth" value="<%= plot.getRoadWidth() %>" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="AVAILABLE" <%= "AVAILABLE".equals(plot.getStatus().name()) ? "selected" : "" %>>Available</option>
+                    <option value="BOOKED" <%= "BOOKED".equals(plot.getStatus().name()) ? "selected" : "" %>>Booked</option>
+                    <option value="SOLD" <%= "SOLD".equals(plot.getStatus().name()) ? "selected" : "" %>>Sold</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Update Plot</button>
+        </form>
     <% } %>
-    <% if (error != null) { %>
-        <div class="alert alert-danger"><%= error %></div>
-    <% } %>
-
-    <form action="${pageContext.request.contextPath}/admin/plots/update" method="post">
-        <input type="hidden" name="plotId" value="<%= plot.getPlotId() %>" />
-
-        <div class="mb-3">
-            <label class="form-label">Project</label>
-            <select name="project.projectId" class="form-select" required>
-                <% for (Project p : projects) { %>
-                    <option value="<%= p.getProjectId() %>" <%= p.getProjectId() == plot.getProject().getProjectId() ? "selected" : "" %>>
-                        <%= p.getProjectName() %>
-                    </option>
-                <% } %>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Site Number</label>
-            <input type="text" name="siteNumber" value="<%= plot.getSiteNumber() %>" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Size</label>
-            <input type="text" name="size" value="<%= plot.getSize() %>" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Facing</label>
-            <input type="text" name="facing" value="<%= plot.getFacing() %>" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Type</label>
-            <select name="type" class="form-select">
-                <option value="REGULAR" <%= "REGULAR".equals(plot.getType()) ? "selected" : "" %>>Regular</option>
-                <option value="CORNER" <%= "CORNER".equals(plot.getType()) ? "selected" : "" %>>Corner</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Road Width</label>
-            <input type="text" name="roadWidth" value="<%= plot.getRoadWidth() %>" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Status</label>
-            <select name="status" class="form-select">
-                <option value="AVAILABLE" <%= "AVAILABLE".equals(plot.getStatus().name()) ? "selected" : "" %>>Available</option>
-                <option value="BOOKED" <%= "BOOKED".equals(plot.getStatus().name()) ? "selected" : "" %>>Booked</option>
-                <option value="SOLD" <%= "SOLD".equals(plot.getStatus().name()) ? "selected" : "" %>>Sold</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-success">Update Plot</button>
-    </form>
 </div>
 
 </body>

@@ -11,7 +11,7 @@
 <body class="p-5">
 <div class="container">
     <h2>Edit User</h2>
-    <form action="<%= request.getContextPath() %>/admin/users/update" method="post">
+    <form action="<%= request.getContextPath() %>/admin/users/update" method="get">
         <input type="hidden" name="userId" value="<%= user.getUserId() %>">
         <div class="mb-3">
             <label>Email:</label>

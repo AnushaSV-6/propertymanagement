@@ -205,7 +205,7 @@
             <td data-status="<%= p.getStatus() != null ? p.getStatus().toString().toUpperCase() : "" %>"><%= p.getStatus() %></td>
             <td><%= p.getCustomer() != null ? p.getCustomer().getName() : "-" %></td>
             <td>
-                <form action="${pageContext.request.contextPath}/admin/plots/edit" method="post" style="margin: 0;">
+                <form action="${pageContext.request.contextPath}/admin/plots/edit" method="get" style="margin: 0;">
                     <input type="hidden" name="plotId" value="<%= p.getPlotId() %>" />
                     <button type="submit">Edit</button>
                 </form>
