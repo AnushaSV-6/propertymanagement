@@ -1,39 +1,52 @@
 package com.rees.service;
 
-import com.rees.dao.ProjectDAO;
+import com.rees.dto.ProjectDTO;
 import com.rees.model.Project;
-
-import jakarta.transaction.Transactional;
-
+import com.rees.mapper.ProjectMapper;
+import com.rees.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
 
     @Autowired
-    private ProjectDAO projectDAO;
-    
+    private ProjectRepository projectRepository;
 
-    public void saveProject(Project project) throws Exception {
-        projectDAO.saveProject(project);
+    @Autowired
+    private ProjectMapper projectMapper;
+
+    public List<ProjectDTO> getAllProjects() {
+        return projectRepository.findAll()
+                .stream()
+                .map(projectMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public void updateProject(Project project) {
-        projectDAO.updateProject(project);
+    public ProjectDTO getProjectById(int id) {
+        Optional<Project> project = projectRepository.findById(id);
+        return project.map(projectMapper::toDTO).orElse(null);
     }
 
-    public Project getProjectById(int projectId) {
-        return projectDAO.getProjectById(projectId);
+    public boolean saveProject(ProjectDTO dto) {
+        try {
+            projectRepository.save(projectMapper.toEntity(dto));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public List<Project> getAllProjects() {
-        return projectDAO.getAllProjects();
+    public boolean updateProject(ProjectDTO dto) {
+        if (dto.getProjectId() == null) return false;
+        Optional<Project> optional = projectRepository.findById(dto.getProjectId());
+        if (!optional.isPresent()) return false;
+        projectRepository.save(projectMapper.toEntity(dto));
+        return true;
     }
 }
-
-
-
-

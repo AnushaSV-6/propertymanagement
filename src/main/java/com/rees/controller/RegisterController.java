@@ -1,8 +1,16 @@
 package com.rees.controller;
 
+import com.rees.dto.UserDTO;
+import com.rees.model.*;
+import com.rees.model.User.Role;
+import com.rees.model.User.Status;
+
+
 import com.rees.service.UserService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,22 +24,19 @@ public class RegisterController {
     @Autowired
     private UserService userService;
 
-    
     @GetMapping("/rees/register")
     public String showRegisterForm(HttpServletRequest request) {
         int captcha = new Random().nextInt(9000) + 1000;
         request.getSession().setAttribute("captcha_value", String.valueOf(captcha));
-        return "public/register";  
+        return "public/register";
     }
 
-    
     @PostMapping("/register")
     public String register(HttpServletRequest request, HttpSession session, Model model) {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
 
-       
         String userCaptcha = request.getParameter("captcha");
         String sessionCaptcha = (String) session.getAttribute("captcha_value");
 
@@ -40,10 +45,17 @@ public class RegisterController {
             return "public/register";
         }
 
-        
-        String message = userService.registerUser(name, email, phone);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(name);
+        userDTO.setEmail(email);
+        userDTO.setPhone(phone);
+        userDTO.setRole(Role.ADMIN);
+        userDTO.setStatus(Status.ACTIVE);
+   
+
+        String message = userService.registerUser(userDTO);
         model.addAttribute("message", message);
 
-        return "secure/registerSuccess";  
+        return "secure/registerSuccess";
     }
 }

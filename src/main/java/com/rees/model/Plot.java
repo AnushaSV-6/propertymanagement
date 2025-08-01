@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.sql.Timestamp;
 
+import com.rees.dto.ProjectDTO;
+
 @Entity
 @Table(name = "plot")
 @Data
@@ -18,7 +20,7 @@ public class Plot {
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    private Project project; // Each plot belongs to one project
+    private Project project; 
 
     @Column(nullable = false)
     private String siteNumber;
@@ -29,7 +31,7 @@ public class Plot {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private Customer customer; // Each plot belongs to one customer
+    private Customer customer;
 
     @Column(nullable = false)
     private String size;
@@ -38,7 +40,7 @@ public class Plot {
     private String facing;
 
     @Column(nullable = false)
-    private String type; // CORNER or REGULAR
+    private String type; 
 
     @Column(name = "road_width", nullable = false)
     private String roadWidth;

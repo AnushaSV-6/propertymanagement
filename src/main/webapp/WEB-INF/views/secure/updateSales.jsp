@@ -1,14 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.rees.model.Customer, com.rees.model.Project, com.rees.model.Plot, com.rees.model.Sales, com.rees.model.SalesSummary" %>
-<%@ page import="java.util.List"
- %>
+<%@ page import="java.util.List" %>
 <%
     String error = (String) request.getAttribute("error");
     String success = (String) request.getAttribute("success");
 
     Customer customer = (Customer) request.getAttribute("customer");
-    java.util.List<Project> projects = (java.util.List<Project>) request.getAttribute("projects");
-    java.util.List<Plot> plots = (java.util.List<Plot>) request.getAttribute("plots");
+    List<Project> projects = (List<Project>) request.getAttribute("projects");
+    List<Plot> plots = (List<Plot>) request.getAttribute("plots");
     Sales sale = (Sales) request.getAttribute("sale");
     SalesSummary summary = (SalesSummary) request.getAttribute("salesSummary");
     Boolean installmentsRemaining = (Boolean) request.getAttribute("installmentsRemaining");
@@ -22,7 +21,33 @@
 <head>
     <title>Update Sale</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+			<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+			<style>
+			    .back-button {
+			        position: absolute;
+			        top: 20px;
+			        left: 20px;
+			        background: white;
+			        padding: 10px 16px;
+			        border-radius: 30px;
+			        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			        color: #333;
+			        font-weight: 500;
+			        text-decoration: none;
+			        transition: background 0.3s, transform 0.2s;
+			    }
+
+			    .back-button i {
+			        margin-right: 8px;
+			    }
+
+			    .back-button:hover {
+			        background: #e0e0e0;
+			        transform: scale(1.05);
+			        text-decoration: none;
+			    }
         body {
             background-color: #f8f9fa;
             font-family: "Poppins", sans-serif;
@@ -42,12 +67,9 @@
 </head>
 <body>
 <div class="container">
-<a href="${pageContext.request.contextPath}/rees/admin/sales" 
-   style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); text-decoration: none; color: black; display: flex; align-items: center;">
-   <img src="${pageContext.request.contextPath}/images/backbutton.png" alt="Back" style="height: 20px; margin-right: 8px;">
-   <span>Back</span>
-</a>
-
+    <a href="${pageContext.request.contextPath}/rees/admin/sales" 	class="back-button">
+			    <i class="bi bi-arrow-left"></i> Back
+	</a>
     <h3>Update Existing Sale</h3>
 
     <% if (error != null) { %>
@@ -124,57 +146,40 @@
                     <th>Date(s)</th>
                 </tr>
             </thead>
-           <tbody>
-    <tr>
-        <td><%= summary.getPlotNumber() %></td>
-        <td><%= summary.getProjectName() %></td>
-        <td>₹<%= summary.getSellingPrice() %></td>
+            <tbody>
+                <tr>
+                    <td><%= summary.getPlotNumber() %></td>
+                    <td><%= summary.getProjectName() %></td>
+                    <td>₹<%= summary.getSellingPrice() %></td>
 
-        <!-- Paid Amounts -->
-        <td>
-            <%
-                List<Double> amounts = summary.getAllAmounts();
-                for (Double amt : amounts) {
-            %>
-                ₹<%= amt %><br/>
-            <%
-                }
-            %>
-        </td>
+                    <!-- Paid Amounts -->
+                    <td>
+                        <% for (Double amt : summary.getAllAmounts()) { %>
+                            ₹<%= amt %><br/>
+                        <% } %>
+                    </td>
 
-        <!-- Modes -->
-        <td>
-            <%
-                List<String> modes = summary.getAllModes();
-                for (String mop : modes) {
-            %>
-                <%= mop %><br/>
-            <%
-                }
-            %>
-        </td>
+                    <!-- Modes -->
+                    <td>
+                        <% for (String mop : summary.getAllModes()) { %>
+                            <%= mop %><br/>
+                        <% } %>
+                    </td>
 
-        <!-- Dates -->
-        <td>
-            <%
-                List<java.sql.Timestamp> dates = summary.getAllDates();
-                for (java.sql.Timestamp dt : dates) {
-            %>
-                <%= dt %><br/>
-            <%
-                }
-            %>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="6">
-            <strong>Total Paid: ₹<%= summary.getTotalPaid() %></strong><br/>
-            <strong>Remaining: ₹<%= summary.getRemaining() %></strong>
-        </td>
-    </tr>
-</tbody>
-
-
+                    <!-- Dates -->
+                    <td>
+                        <% for (java.sql.Timestamp dt : summary.getAllDates()) { %>
+                            <%= dt.toLocalDateTime().toLocalDate() %><br/>
+                        <% } %>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <strong>Total Paid: ₹<%= summary.getTotalPaid() %></strong><br/>
+                        <strong>Remaining: ₹<%= summary.getRemaining() %></strong>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     <% } %>
 

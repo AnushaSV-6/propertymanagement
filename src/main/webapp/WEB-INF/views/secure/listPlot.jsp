@@ -1,14 +1,43 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="java.util.*, com.rees.model.Plot, com.rees.model.Project" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.rees.dto.PlotDTO" %>
+<%@ page import="com.rees.dto.ProjectDTO" %>
 <%
-    List<Plot> plots = (List<Plot>) request.getAttribute("plots");
-    List<Project> projects = (List<Project>) request.getAttribute("projects");
+    List<PlotDTO> plots = (List<PlotDTO>) request.getAttribute("plots");
+    List<ProjectDTO> projects = (List<ProjectDTO>) request.getAttribute("projects");
     Integer selectedProjectId = (Integer) request.getAttribute("selectedProjectId");
 %>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Plot List</title>
-    <style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+		<style>
+		    .back-button {
+		        position: absolute;
+		        top: 20px;
+		        left: 20px;
+		        background: white;
+		        padding: 10px 16px;
+		        border-radius: 30px;
+		        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		        color: #333;
+		        font-weight: 500;
+		        text-decoration: none;
+		        transition: background 0.3s, transform 0.2s;
+		    }
+
+		    .back-button i {
+		        margin-right: 8px;
+		    }
+
+		    .back-button:hover {
+		        background: #e0e0e0;
+		        transform: scale(1.05);
+		        text-decoration: none;
+		    }
         body {
             font-family: Arial, sans-serif;
             padding: 40px;
@@ -101,20 +130,19 @@
             margin-top: 30px;
         }
         .back-link {
-    display: inline-block;
-    margin-bottom: 20px;
-    padding: 10px 18px;
-    background-color: #6c757d; /* Gray background similar to Bootstrap's secondary */
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-.back-link:hover {
-    background-color: #5a6268;
-}
-        
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 18px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .back-link:hover {
+            background-color: #5a6268;
+        }
     </style>
     <script>
         function filterByStatus(status) {
@@ -140,92 +168,80 @@
 <body>
 
 <div class="container">
-	<a href="${pageContext.request.contextPath}/rees/admin/plots" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); text-decoration: none; color: black; display: flex; align-items: center;">
-   <img src="${pageContext.request.contextPath}/images/backbutton.png" alt="Back" style="height: 20px; margin-right: 8px;">
-   <span>Back</span></a>
+    <a href="${pageContext.request.contextPath}/rees/admin/plots" 	class="back-button">
+			    <i class="bi bi-arrow-left"></i> Back
+    </a>
 
     <h2>Plot List</h2>
 
     <div class="filter-form">
-        <form action="${pageContext.request.contextPath}/admin/plots/list" method="GET">
+        <form action="${pageContext.request.contextPath}/rees/admin/plots/list" method="GET">
             <label for="projectId">Select Project:</label>
             <select name="projectId" id="projectId" required>
                 <option value="">-- Select --</option>
-                <%
-                    if (projects != null) {
-                        for (Project proj : projects) {
-                            String selected = (selectedProjectId != null && proj.getProjectId() == selectedProjectId) ? "selected" : "";
+                <% if (projects != null) {
+                    for (ProjectDTO proj : projects) {
+                        String selected = (selectedProjectId != null && proj.getProjectId().equals(selectedProjectId)) ? "selected" : "";
                 %>
                 <option value="<%= proj.getProjectId() %>" <%= selected %>><%= proj.getProjectName() %></option>
-                <%
-                        }
-                    }
+                <%     }
+                   }
                 %>
             </select>
             <button type="submit">Load</button>
         </form>
     </div>
 
-    <%
-        if (plots != null && !plots.isEmpty()) {
-    %>
+    <% if (plots != null && !plots.isEmpty()) { %>
 
-    <div class="status-radio">
-        <label><input type="radio" name="status" value="ALL" checked onclick="filterByStatus('ALL')"> All</label>
-        <label><input type="radio" name="status" value="AVAILABLE" onclick="filterByStatus('AVAILABLE')"> Available</label>
-        <label><input type="radio" name="status" value="BOOKED" onclick="filterByStatus('BOOKED')"> Booked</label>
-        <label><input type="radio" name="status" value="SOLD" onclick="filterByStatus('SOLD')"> Sold</label>
-    </div>
+        <div class="status-radio">
+            <label><input type="radio" name="status" value="ALL" checked onclick="filterByStatus('ALL')"> All</label>
+            <label><input type="radio" name="status" value="AVAILABLE" onclick="filterByStatus('AVAILABLE')"> Available</label>
+            <label><input type="radio" name="status" value="BOOKED" onclick="filterByStatus('BOOKED')"> Booked</label>
+            <label><input type="radio" name="status" value="SOLD" onclick="filterByStatus('SOLD')"> Sold</label>
+        </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Project</th>
-            <th>Site No</th>
-            <th>Size</th>
-            <th>Facing</th>
-            <th>Type</th>
-            <th>Road Width</th>
-            <th>Status</th>
-            <th>Customer</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-            for (Plot p : plots) {
-        %>
-        <tr>
-            <td><%= p.getPlotId() %></td>
-            <td><%= p.getProject() != null ? p.getProject().getProjectName() : "-" %></td>
-            <td><%= p.getSiteNumber() %></td>
-            <td><%= p.getSize() %></td>
-            <td><%= p.getFacing() %></td>
-            <td><%= p.getType() %></td>
-            <td><%= p.getRoadWidth() %></td>
-            <td data-status="<%= p.getStatus() != null ? p.getStatus().toString().toUpperCase() : "" %>"><%= p.getStatus() %></td>
-            <td><%= p.getCustomer() != null ? p.getCustomer().getName() : "-" %></td>
-            <td>
-                <form action="${pageContext.request.contextPath}/rees/admin/plots/edit" method="get" style="margin: 0;">
-                    <input type="hidden" name="plotId" value="<%= p.getPlotId() %>" />
-                    <button type="submit">Edit</button>
-                </form>
-            </td>
-        </tr>
-        <%
-            }
-        %>
-        </tbody>
-    </table>
+        <table>
+            <thead>
+            <tr>
+              
+                <th>Project</th>
+                <th>Site No</th>
+                <th>Size</th>
+                <th>Facing</th>
+                <th>Type</th>
+                <th>Road Width</th>
+                <th>Status</th>
+                <th>Customer</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (PlotDTO p : plots) { %>
+                <tr>
+                  
+                    <td><%= p.getProjectName() != null ? p.getProjectName() : "-" %></td>
+                    <td><%= p.getSiteNumber() %></td>
+                    <td><%= p.getSize() %></td>
+                    <td><%= p.getFacing() %></td>
+                    <td><%= p.getType() %></td>
+                    <td><%= p.getRoadWidth() %></td>
+                    <td data-status="<%= p.getStatus() != null ? p.getStatus().toUpperCase() : "" %>"><%= p.getStatus() %></td>
+                    <td><%= p.getCustomerName() != null ? p.getCustomerName() : "-" %></td>
+                    <td>
+                        <form action="${pageContext.request.contextPath}/rees/admin/plots/edit" method="get" style="margin: 0;">
+                            <input type="hidden" name="plotId" value="<%= p.getPlotId() %>" />
+                            <button type="submit">Edit</button>
+                        </form>
+                    </td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
 
-    <%
-        } else if (selectedProjectId != null) {
-    %>
-    <div class="no-data">No plots found for selected project.</div>
-    <%
-        }
-    %>
+    <% } else if (selectedProjectId != null) { %>
+        <div class="no-data">No plots found for selected project.</div>
+    <% } %>
 </div>
 
 </body>

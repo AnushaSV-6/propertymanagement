@@ -1,3 +1,4 @@
+
 package com.rees.service;
 
 import com.rees.dao.SalesDAO;
@@ -18,74 +19,68 @@ import java.util.List;
 @Service
 public class SalesService {
 
-    @Autowired
-    private SalesDAO salesDAO;
+	@Autowired
+	private SalesDAO salesDAO;
 
-    // Used in both Add & Update flows
-    public Customer getCustomerByPhone(String phone) {
-        return salesDAO.findCustomerByPhone(phone);
-    }
+	// Used in both Add & Update flows
+	public Customer getCustomerByPhone(String phone) {
+		return salesDAO.findCustomerByPhone(phone);
+	}
 
-    public Customer getCustomerById(int customerId) {
-        return salesDAO.findCustomerById(customerId);
-    }
+	public Customer getCustomerById(int customerId) {
+		return salesDAO.findCustomerById(customerId);
+	}
 
-    public Project getProjectById(int id) {
-        return salesDAO.getProjectById(id);
-    }
-   
+	public Project getProjectById(int id) {
+		return salesDAO.getProjectById(id);
+	}
 
-    public Plot getPlotById(int id) {
-        return salesDAO.getPlotById(id);
-    }
-    public SalesSummary getSalesSummary(int customerId, int projectId, int plotId) {
-        return salesDAO.getSalesSummary(customerId, projectId, plotId);
-    }
+	public Plot getPlotById(int id) {
+		return salesDAO.getPlotById(id);
+	}
 
-    
-    public boolean saleExists(int customerId, int projectId, int plotId) throws SQLException {
-        return salesDAO.saleExists(customerId, projectId, plotId);
-    }
+	public SalesSummary getSalesSummary(int customerId, int projectId, int plotId) {
+		return salesDAO.getSalesSummary(customerId, projectId, plotId);
+	}
 
-    public Sales getSale(int customerId, int projectId, int plotId) throws SQLException {
-        return salesDAO.getSale(customerId, projectId, plotId);
-    }
+	public boolean saleExists(int customerId, int projectId, int plotId) throws SQLException {
+		return salesDAO.saleExists(customerId, projectId, plotId);
+	}
 
-    public Sales getSaleByCustomerProjectPlot(int customerId, int projectId, int plotId) {
-        return salesDAO.findByCustomerProjectPlot(customerId, projectId, plotId);
-    }
+	public Sales getSale(int customerId, int projectId, int plotId) throws SQLException {
+		return salesDAO.getSale(customerId, projectId, plotId);
+	}
 
-    public void saveSale(Sales sale, int customerId, int projectId, int plotId) throws Exception {
-        salesDAO.insertSale(sale, customerId, projectId, plotId);
-        salesDAO.updatePlotStatus(plotId, customerId);
-    }
+	public Sales getSaleByCustomerProjectPlot(int customerId, int projectId, int plotId) {
+		return salesDAO.findByCustomerProjectPlot(customerId, projectId, plotId);
+	}
 
-    public void insertSalePayment(int saleId, double amount, Date date, String mop, String desc) throws SQLException {
-        salesDAO.insertSalePayment(saleId, amount, date, mop, desc);
-    }
+	public void saveSale(Sales sale, int customerId, int projectId, int plotId) throws Exception {
+		salesDAO.insertSale(sale, customerId, projectId, plotId);
+		salesDAO.updatePlotStatus(plotId, customerId);
+	}
 
-    // For Add flow
-    public List<Project> getAllProjects() {
-        return salesDAO.getAllProjects();
-    }
+	public void insertSalePayment(int saleId, double amount, Date date, String mop, String desc) throws SQLException {
+		salesDAO.insertSalePayment(saleId, amount, date, mop, desc);
+	}
 
+	public List<Project> getAllProjects() {
+		return salesDAO.getAllProjects();
+	}
 
+	public List<Project> getProjectsWithSales(int customerId) {
+		return salesDAO.getProjectsWithSales(customerId);
+	}
 
-    
+	public List<Plot> getPlotsWithSales(int customerId, int projectId) {
+		return salesDAO.getPlotsWithSales(customerId, projectId);
+	}
 
-    // For Update flow
-    public List<Project> getProjectsWithSales(int customerId) {
-        return salesDAO.getProjectsWithSales(customerId);
-    }
+	public List<Project> getAvailableProjects() throws SQLException {
+		return salesDAO.getAvailableProjects();
+	}
 
-    public List<Plot> getPlotsWithSales(int customerId, int projectId) {
-        return salesDAO.getPlotsWithSales(customerId, projectId);
-    }
-    public List<Project> getAvailableProjects() throws SQLException {
-        return salesDAO.getAvailableProjects();
-    }
-
-    public List<Plot> getAvailablePlotsByProject(int projectId) throws SQLException {
-        return salesDAO.getAvailablePlotsByProject(projectId);
-    }
+	public List<Plot> getAvailablePlotsByProject(int projectId) throws SQLException {
+		return salesDAO.getAvailablePlotsByProject(projectId);
+	}
 }

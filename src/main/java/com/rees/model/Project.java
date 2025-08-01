@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -44,18 +45,13 @@ public class Project {
     private ProjectStatus projectStatus;
 
     @OneToMany(mappedBy = "project")
-    private List<Plot> plots; // One project can have many plots
+    private List<Plot> plots;
 
     @OneToMany(mappedBy = "project")
-    private List<Sales> sales; // One project can have many sales
-    
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Timestamp createdAt;
-    
-    @Column(name = "updated_at", columnDefinition = "DATETIME(6)")
-    private Timestamp updatedAt;
-    
-   
+    private List<Sales> sales;
+
+
+
     public enum ProjectType {
         JV, OWN
     }

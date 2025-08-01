@@ -21,7 +21,7 @@ public class CustomerDAO {
              PreparedStatement ps = conn.prepareStatement(QueryLoader.getQuery("customer.selectByPhone"))) {
             ps.setString(1, contactNumber);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // Phone already exists
+                return rs.next(); 
             }
         } catch (SQLException e) {
             e.printStackTrace();

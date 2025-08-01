@@ -1,6 +1,6 @@
 package com.rees.controller;
 
-import com.rees.model.Customer;
+import com.rees.dto.CustomerDTO;
 import com.rees.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,12 +24,12 @@ public class CustomerController {
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("customer", new Customer());
+        model.addAttribute("customer", new CustomerDTO());
         return "secure/addCustomer";
     }
 
     @PostMapping("/save")
-    public String saveCustomer(@ModelAttribute Customer customer,
+    public String saveCustomer(@ModelAttribute CustomerDTO customer,
                                RedirectAttributes redirectAttributes) {
         if (customerService.isPhoneExists(customer.getContactNumber())) {
             redirectAttributes.addFlashAttribute("message", "❌ Phone number already exists!");
@@ -39,17 +39,15 @@ public class CustomerController {
         boolean saved = customerService.saveCustomer(customer);
         if (saved) {
             redirectAttributes.addFlashAttribute("message", "✅ Customer added successfully.");
-            return "redirect:/rees/admin/customers/add";
-        
         } else {
             redirectAttributes.addFlashAttribute("message", "❌ Error while saving customer.");
-            return "redirect:/rees/admin/customers/add";
         }
+        return "redirect:/rees/admin/customers/add";
     }
 
     @GetMapping("/list")
     public String listCustomers(Model model) {
-        List<Customer> customers = customerService.getAllCustomers();
+        List<CustomerDTO> customers = customerService.getAllCustomers();
         model.addAttribute("customers", customers);
         return "secure/listCustomers";
     }

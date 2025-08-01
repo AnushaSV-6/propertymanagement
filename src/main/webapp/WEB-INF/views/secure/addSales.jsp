@@ -17,8 +17,33 @@
 <head>
     <title>Add Sale</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+			<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+			<style>
+			    .back-button {
+			        position: absolute;
+			        top: 20px;
+			        left: 20px;
+			        background: white;
+			        padding: 10px 16px;
+			        border-radius: 30px;
+			        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			        color: #333;
+			        font-weight: 500;
+			        text-decoration: none;
+			        transition: background 0.3s, transform 0.2s;
+			    }
+
+			    .back-button i {
+			        margin-right: 8px;
+			    }
+
+			    .back-button:hover {
+			        background: #e0e0e0;
+			        transform: scale(1.05);
+			        text-decoration: none;
+			    }        body {
             background: #f8f9fa;
             padding-top: 60px;
             font-family: "Poppins", sans-serif;
@@ -37,9 +62,9 @@
 </head>
 <body>
 <div class="container">
-    <a href="${pageContext.request.contextPath}/rees/admin/sales" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); text-decoration: none; color: black; display: flex; align-items: center;">
-   <img src="${pageContext.request.contextPath}/images/backbutton.png" alt="Back" style="height: 20px; margin-right: 8px;">
-   <span>Back</span></a>
+    <a href="${pageContext.request.contextPath}/rees/admin/sales" 	class="back-button">
+			    <i class="bi bi-arrow-left"></i> Back
+	</a>>
 
     <h3>Add Sale - Step by Step</h3>
 
@@ -100,8 +125,6 @@
         </form>
     <% } %>
 
-  
-    <%-- 
     <% if (saleExists != null && saleExists) { %>
         <div class="alert alert-info">Sale already exists for this customer.</div>
         <form method="get" action="${pageContext.request.contextPath}/rees/admin/sales/updateSales">
@@ -111,10 +134,9 @@
             <button type="submit" class="btn btn-warning">Go to Update Sale</button>
         </form>
     <% } %>
---%>
-    
-      
-<% if (customer != null && selectedProject != null && selectedPlot != null) { %>        <!-- Step 4: Enter Sale Details -->
+
+    <% if (customer != null && selectedProject != null && selectedPlot != null && (saleExists == null || !saleExists)) { %>
+        <!-- Step 4: Enter Sale Details -->
         <form method="post" action="${pageContext.request.contextPath}/rees/admin/sales/submit">
             <input type="hidden" name="customerId" value="<%= customer.getCustomerId() %>" />
             <input type="hidden" name="projectId" value="<%= selectedProject.getProjectId() %>" />
@@ -146,7 +168,7 @@
             </div>
             <button type="submit" class="btn btn-success">Add Sale</button>
         </form>
-<% } %>
+    <% } %>
 </div>
 </body>
 </html>

@@ -1,116 +1,104 @@
 package com.rees.service;
 
-import com.rees.dao.UserDAO;
+import com.rees.dto.UserDTO;
+import com.rees.mapper.UserMapper;
 import com.rees.model.User;
+import com.rees.repository.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
-
 public class UserService {
 
 	@Autowired
-	private UserDAO userDAO;
-	@Autowired
-	private EmailService emailService;
+	private PasswordService passwordService;
 
-	// LOGIN: Validate using BCrypt
-	public User findByEmailAndPassword(String email, String rawPassword) {
-		User user = userDAO.findByEmail(email);
-		if (user != null && BCrypt.checkpw(rawPassword, user.getPassword())) {
-			return user;
-		}
-		return null;
-	}
+	
+    @Autowired
+    private UserRepository userRepository;
 
-	public boolean checkPassword(String rawPassword, String hashedPassword) {
-		return BCrypt.checkpw(rawPassword, hashedPassword);
-	}
+    @Autowired
+    private UserMapper userMapper;
 
-	public User findByEmail(String email) {
-		return userDAO.findByEmail(email);
-	}
+    @Autowired
+    private EmailService emailService;
 
-	public String resetPassword(String email) {
-		User user = userDAO.findByEmail(email);
-		if (user == null) {
-			return "No account found with this email.";
-		}
+    public String registerUser(UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            return "Email already exists.";
+        }
 
-		String newRawPassword = generateRandomPassword();
-		String newEncryptedPassword = BCrypt.hashpw(newRawPassword, BCrypt.gensalt());
+        if (userRepository.existsByPhone(userDTO.getPhone())) {
+            return "Phone number already exists.";
+        }
 
-		userDAO.updatePassword(user.getUserId(), newEncryptedPassword);
-		boolean emailSent = emailService.sendResetEmail(user.getName(), email, newRawPassword);
+        String userId = generateUserId();
+        String rawPassword = passwordService.generateRandomPassword();
+        String encryptedPassword = passwordService.encryptPassword(rawPassword);
 
-		// Return success or failure message based on email sent status
-		if (emailSent) {
-			return "New Password has been sent to your registered email.";
-		} else {
-			return "Error sending email. Please try again later.";
-		}
-	}
+        User user = userMapper.toEntity(userDTO);
+        user.setUserId(userId);
+        user.setPassword(encryptedPassword);
+        user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
-	public String registerUser(String name, String email, String phone) {
-		// Check if user already exists with email or phone
-		if (userDAO.existsByEmail(email)) {
-			return "User already exists with this email.";
-		}
-		if (userDAO.existsByPhone(phone)) {
-			return "Phone number already registered.";
-		}
+        userRepository.save(user);
 
-		String userId = generateUserId();
-		String rawPassword = generateRandomPassword();
-		String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
+        boolean emailSent = emailService.sendWelcomeEmail(user.getName(), user.getEmail(), rawPassword);
 
-		// 3. Create user object and save
-		User user = new User();
-		user.setUserId(userId);
-		user.setName(name);
-		user.setEmail(email);
-		user.setPhone(phone);
-		user.setPassword(hashedPassword);
-		user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-		if (user.getRole() == null) {
-			user.setRole(User.Role.ADMIN); // Or any default
-		}
-		if (user.getStatus() == null) {
-			user.setStatus(User.Status.ACTIVE);
-		}
+        if (emailSent) {
+            return "Password has been sent to your registered email.";
+        } else {
+            return "Error sending email. Please try again later.";
+        }
+    }
 
-		// Save the user to the database
-		userDAO.save(user);
+    public Optional<UserDTO> authenticateUser(String email, String rawPassword) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        return userOpt
+                .filter(user -> passwordService.matchPassword(rawPassword, user.getPassword()))
+                .map(userMapper::toDTO);
+    }
 
-		// Send the welcome email with the temporary password
-		boolean emailSent = emailService.sendWelcomeEmail(name, email, rawPassword);
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 
-		// Return success or failure message based on email sent status
-		if (emailSent) {
-			return "Password has been sent to your registered email.";
-		} else {
-			return "Error sending email. Please try again later.";
-		}
-	}
+    public boolean existsByPhone(String phone) {
+        return userRepository.existsByPhone(phone);
+    }
 
-	private String generateUserId() {
-		int random = new Random().nextInt(9000) + 1000;
-		return "CU" + random;
-	}
+    public Optional<UserDTO> findByEmail(String email) {
+        return userRepository.findByEmail(email).map(userMapper::toDTO);
+    }
 
-	private String generateRandomPassword() {
-		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		StringBuilder sb = new StringBuilder();
-		Random rand = new Random();
-		for (int i = 0; i < 8; i++) {
-			sb.append(chars.charAt(rand.nextInt(chars.length())));
-		}
-		return sb.toString();
-	}
+    public String resetPassword(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            return "No user found with this email.";
+        }
 
+        User user = userOpt.get();
+        String newPassword = passwordService.generateRandomPassword();
+        String encryptedPassword = passwordService.encryptPassword(newPassword);
+        user.setPassword(encryptedPassword);
+        userRepository.save(user);
+
+        boolean emailSent = emailService.sendResetEmail(user.getName(), user.getEmail(), newPassword);
+
+        if (emailSent) {
+            return "New Password has been sent to your registered email.";
+        } else {
+            return "Error sending email. Please try again.";
+        }
+    }
+
+    private String generateUserId() {
+        int random = new Random().nextInt(9000) + 1000;
+        return "CU" + random;
+    }
 }

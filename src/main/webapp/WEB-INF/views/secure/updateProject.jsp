@@ -1,11 +1,37 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="java.util.List, com.rees.model.Project" %>
+<%@ page import="java.util.List, com.rees.dto.ProjectDTO" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Update Project</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+	<style>
+	    .back-button {
+	        position: absolute;
+	        top: 20px;
+	        left: 20px;
+	        background: white;
+	        padding: 10px 16px;
+	        border-radius: 30px;
+	        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	        color: #333;
+	        font-weight: 500;
+	        text-decoration: none;
+	        transition: background 0.3s, transform 0.2s;
+	    }
+
+	    .back-button i {
+	        margin-right: 8px;
+	    }
+
+	    .back-button:hover {
+	        background: #e0e0e0;
+	        transform: scale(1.05);
+	        text-decoration: none;
+	    }
         body {
             background-color: #f8f9fa;
             font-family: 'Poppins', sans-serif;
@@ -39,32 +65,13 @@
             padding: 10px 25px;
         }
 
-        .back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: white;
-            padding: 10px 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            text-decoration: none;
-            color: black;
-            display: flex;
-            align-items: center;
-        }
-
-        .back-btn img {
-            height: 20px;
-            margin-right: 8px;
-        }
+	
     </style>
 </head>
 <body>
 <div class="container">
-    <a href="${pageContext.request.contextPath}/rees/admin/projects" class="back-btn">
-        <img src="${pageContext.request.contextPath}/images/backbutton.png" alt="Back">
-        <span>Back</span>
+    <a href="${pageContext.request.contextPath}/rees/admin/projects" 	class="back-button">
+	    <i class="bi bi-arrow-left"></i> Back
     </a>
 
     <h2>Update Project</h2>
@@ -87,12 +94,12 @@
             <label class="form-label">Select Project to Update:</label>
             <select name="projectId" class="form-select">
                 <%
-                    List<Project> allProjects = (List<Project>) request.getAttribute("allProjects");
+                    List<ProjectDTO> allProjects = (List<ProjectDTO>) request.getAttribute("allProjects");
                     Integer selectedId = request.getParameter("projectId") != null ?
                                          Integer.parseInt(request.getParameter("projectId")) : null;
-                    for (Project p : allProjects) {
+                    for (ProjectDTO p : allProjects) {
                 %>
-                <option value="<%=p.getProjectId()%>" <%= (selectedId != null && selectedId == p.getProjectId()) ? "selected" : "" %>>
+                <option value="<%=p.getProjectId()%>" <%= (selectedId != null && selectedId.equals(p.getProjectId())) ? "selected" : "" %>>
                     <%=p.getProjectName()%>
                 </option>
                 <%
@@ -105,7 +112,7 @@
 
     <!-- Step 2: Update Form -->
     <%
-        Project selectedProject = (Project) request.getAttribute("project");
+        ProjectDTO selectedProject = (ProjectDTO) request.getAttribute("project");
         if (selectedProject != null) {
     %>
     <form method="post" action="update">
@@ -141,8 +148,8 @@
             <div class="col-md-6">
                 <label class="form-label">Project Type</label>
                 <select name="projectType" class="form-select" required>
-                    <option value="OWN" <%= "OWN".equals(selectedProject.getProjectType().name()) ? "selected" : "" %>>OWN</option>
-                    <option value="JV" <%= "JV".equals(selectedProject.getProjectType().name()) ? "selected" : "" %>>JV</option>
+                    <option value="OWN" <%= selectedProject.getProjectType() != null && "OWN".equals(selectedProject.getProjectType().name()) ? "selected" : "" %>>OWN</option>
+                    <option value="JV" <%= selectedProject.getProjectType() != null && "JV".equals(selectedProject.getProjectType().name()) ? "selected" : "" %>>JV</option>
                 </select>
             </div>
         </div>
@@ -151,12 +158,15 @@
             <div class="col-md-6">
                 <label class="form-label">Project Status</label>
                 <select name="projectStatus" class="form-select" required>
-                    <option value="STARTED" <%= "STARTED".equals(selectedProject.getProjectStatus().name()) ? "selected" : "" %>>STARTED</option>
-                    <option value="REGISTERED" <%= "REGISTERED".equals(selectedProject.getProjectStatus().name()) ? "selected" : "" %>>REGISTERED</option>
-                    <option value="COMPLETED" <%= "COMPLETED".equals(selectedProject.getProjectStatus().name()) ? "selected" : "" %>>COMPLETED</option>
-                    <option value="PURCHASED" <%= "PURCHASED".equals(selectedProject.getProjectStatus().name()) ? "selected" : "" %>>PURCHASED</option>
-                    <option value="UNDER_AGREEMENT" <%= "UNDER_AGREEMENT".equals(selectedProject.getProjectStatus().name()) ? "selected" : "" %>>UNDER AGREEMENT</option>
-                    <option value="JV" <%= "JV".equals(selectedProject.getProjectStatus().name()) ? "selected" : "" %>>JV</option>
+                    <%
+                        String status = selectedProject.getProjectStatus() != null ? selectedProject.getProjectStatus().name() : "";
+                    %>
+                    <option value="STARTED" <%= "STARTED".equals(status) ? "selected" : "" %>>STARTED</option>
+                    <option value="REGISTERED" <%= "REGISTERED".equals(status) ? "selected" : "" %>>REGISTERED</option>
+                    <option value="COMPLETED" <%= "COMPLETED".equals(status) ? "selected" : "" %>>COMPLETED</option>
+                    <option value="PURCHASED" <%= "PURCHASED".equals(status) ? "selected" : "" %>>PURCHASED</option>
+                    <option value="UNDERAGREEMENT" <%= "UNDERAGREEMENT".equals(status) ? "selected" : "" %>>UNDER AGREEMENT</option>
+                    <option value="JV" <%= "JV".equals(status) ? "selected" : "" %>>JV</option>
                 </select>
             </div>
             <div class="col-md-6">

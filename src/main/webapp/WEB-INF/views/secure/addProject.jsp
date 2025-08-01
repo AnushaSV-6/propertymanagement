@@ -5,7 +5,33 @@
 <head>
     <title>Add Project</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+	<style>
+	    .back-button {
+	        position: absolute;
+	        top: 20px;
+	        left: 20px;
+	        background: white;
+	        padding: 10px 16px;
+	        border-radius: 30px;
+	        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	        color: #333;
+	        font-weight: 500;
+	        text-decoration: none;
+	        transition: background 0.3s, transform 0.2s;
+	    }
+
+	    .back-button i {
+	        margin-right: 8px;
+	    }
+
+	    .back-button:hover {
+	        background: #e0e0e0;
+	        transform: scale(1.05);
+	        text-decoration: none;
+	    }
         body {
             background: #f8f9fa;
             padding-top: 60px;
@@ -39,32 +65,13 @@
             font-weight: 500;
         }
 
-        .back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: white;
-            padding: 10px 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            text-decoration: none;
-            color: black;
-            display: flex;
-            align-items: center;
-        }
-
-        .back-btn img {
-            height: 20px;
-            margin-right: 8px;
-        }
+       
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="${pageContext.request.contextPath}/rees/admin/projects" class="back-btn">
-            <img src="${pageContext.request.contextPath}/images/backbutton.png" alt="Back">
-            <span>Back</span>
+        <a href="${pageContext.request.contextPath}/rees/admin/projects" 		class="back-button">
+		    <i class="bi bi-arrow-left"></i> Back
         </a>
 
         <h3>Add New Project</h3>
@@ -121,12 +128,13 @@
                 <div class="col-md-6">
                     <label class="form-label">Project Status</label>
                     <select name="projectStatus" class="form-select" required>
-                        <option value="STARTED">STARTED</option>
-                        <option value="REGISTERED">REGISTERED</option>
-                        <option value="COMPLETED">COMPLETED</option>
-                        <option value="PURCHASED">PURCHASED</option>
-                        <option value="UNDERAGREEMENT">UNDER AGREEMENT</option>
-                        <option value="JV">JV</option>
+						    <option value="STARTED">STARTED</option>
+						    <option value="COMPLETED">COMPLETED</option>
+						    <option value="JV">JV</option>
+						    <option value="PURCHASED">PURCHASED</option>
+						    <option value="REGISTERED">REGISTERED</option>
+						    <option value="UNDERAGREEMENT">UNDERAGREEMENT</option>
+
                     </select>
                 </div>
                 <div class="col-md-6">
